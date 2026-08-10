@@ -1,8 +1,10 @@
 # Earlier — iOS app
 
 Native **SwiftUI** implementation of the *Earlier* wake-up / alarm app, built from the
-Claude Design import (`Earlier App.dc.html`). This target covers **all screens and
-navigation** using the design's mock data (no alarm scheduling / persistence yet).
+Claude Design imports (`Earlier Onboarding.dc.html` + `Earlier App.dc.html`). The app
+launches into the **onboarding flow** (36 steps), then transitions into the **main app**.
+This target covers **all screens and navigation** using the design's mock data (no alarm
+scheduling / persistence yet).
 
 ## Requirements
 
@@ -36,9 +38,19 @@ Earlier/
 │  ├─ Components.swift         # card style, custom TabBar, FAB, ScreenScaffold
 │  ├─ ModalKit.swift           # sheet/overlay chrome, day picker, buttons
 │  ├─ Models.swift             # mock data (alarms, bedtimes, challenges, …)
-│  └─ Screens/                 # one file (or a few) per screen
+│  ├─ Screens/                 # main-app screens (one file or a few per screen)
+│  └─ Onboarding/              # onboarding flow
+│     ├─ OnboardingState.swift # 36-step model (step index, answers, mission, days)
+│     ├─ OnboardingFlow.swift  # dispatches the current step to its screen
+│     ├─ OnboardingChrome.swift# progress header, CTA footer, option row, time wheel
+│     ├─ OnboardingScreensA/B  # the 20 screen types
+│     └─ PaywallScreen.swift   # final step → enters the main app
 └─ Resources/Fonts/            # Plus Jakarta Sans (400–800), bundled via UIAppFonts
 ```
+
+The app entry (`EarlierApp.swift`) shows `OnboardingFlow` first; the paywall's CTA calls
+`onFinish`, which swaps in `RootView` (the main app). `onboarded` is in-memory, so each
+launch replays onboarding — handy for review.
 
 ## Notes on fidelity
 

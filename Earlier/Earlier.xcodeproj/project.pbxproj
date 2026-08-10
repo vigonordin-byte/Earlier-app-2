@@ -14,15 +14,21 @@
 		136036A84D2BDFC3C2770920 /* EditBedtimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15797D2E67B751B314F88D09 /* EditBedtimeView.swift */; };
 		1A13091BB5A5D0F2ED750C14 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB8F82491B04B9B20618DCCF /* Models.swift */; };
 		1ADBBD3EC9B346B30D15EAE5 /* Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B55A8E0079701CAB3CF502 /* Icons.swift */; };
+		1CE0ADB54450210E7E7BE3C9 /* OnboardingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81973DE64599DF9344A7224E /* OnboardingState.swift */; };
 		2C87077E2C2FCF5E5995C6CA /* ModalKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC2E0E025F8F4CE2BFB7DB0 /* ModalKit.swift */; };
 		2FBD4CB8BBECD5361F6C3936 /* PlusJakartaSans-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C9BEFB0B491B855B9724C11 /* PlusJakartaSans-ExtraBold.ttf */; };
 		3B8DF5920B7F5C78A55BED97 /* AlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C115A7B22EA59575F5C083CA /* AlarmView.swift */; };
 		52C89B13DD7F53230BDA5AEE /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1FD6A532581113F569AD0B /* AppState.swift */; };
+		559059AADC660DB556937780 /* OnboardingChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046B5A3353ADFF95D8226F39 /* OnboardingChrome.swift */; };
+		6983BD968B1B9D4FA3A2BFBD /* PaywallScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA12AF213B3D3BCB74E9D47 /* PaywallScreen.swift */; };
 		7A6B6B649551AAB4936B028D /* PlusJakartaSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A628045CD65DFEA96CEAB698 /* PlusJakartaSans-Regular.ttf */; };
 		83A77003590D5E5339B47224 /* WindDownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FF4509A5B891B04187A8E7 /* WindDownView.swift */; };
+		8D9108970C2AFABDAFC82A15 /* OnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E5C0E577FE99968BFA6274 /* OnboardingFlow.swift */; };
+		97C501E323EABE994E911AB6 /* OnboardingIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F956C12B3B4B1857ABB9F6F /* OnboardingIcons.swift */; };
 		A737AB4A62E7083E5C45C98B /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568CC05EDE60B42A007A63A2 /* Theme.swift */; };
 		AAA399102C2E0E38FD8CD1BD /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FAF566FB5E7E0294140845A /* HomeView.swift */; };
 		AAE08C2C9D2D968AEE7196AE /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7020382CB5F4D261AC03F1F /* HistoryView.swift */; };
+		ADF052FB5AA38CE97A0CF6C1 /* OnboardingScreensA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2080E7607159AD1C511FD2B2 /* OnboardingScreensA.swift */; };
 		C13A1BE42174F9E87687050E /* Sheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8018B51C230FC006C24F0636 /* Sheets.swift */; };
 		C51AAD45F8BA7E9EEA31F490 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0ED96E7A00DCFD808321E8 /* Components.swift */; };
 		CD839BE0DD0B96D3E807ED62 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D8A4444EEC5506BFFB25422 /* RootView.swift */; };
@@ -31,22 +37,29 @@
 		E88E3ACBD9F35BAA2C33A2E1 /* PlusJakartaSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4F51BCCE23FC80668FBABE0D /* PlusJakartaSans-Bold.ttf */; };
 		EC9660DB7A62080CE2AD777F /* BedtimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427BFFEBD9203FCEC7F9F5C5 /* BedtimeView.swift */; };
 		EF0654237EE24E6C798858B9 /* NewAlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9312F33C876FEE92E642567 /* NewAlarmView.swift */; };
+		F0B23964468AAA3D7A87AA76 /* OnboardingScreensB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552170F6D163029FDBBD7FA6 /* OnboardingScreensB.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		046B5A3353ADFF95D8226F39 /* OnboardingChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingChrome.swift; sourceTree = "<group>"; };
 		0DC2E0E025F8F4CE2BFB7DB0 /* ModalKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalKit.swift; sourceTree = "<group>"; };
 		15797D2E67B751B314F88D09 /* EditBedtimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBedtimeView.swift; sourceTree = "<group>"; };
 		1C9BEFB0B491B855B9724C11 /* PlusJakartaSans-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-ExtraBold.ttf"; sourceTree = "<group>"; };
 		1FAF566FB5E7E0294140845A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		2080E7607159AD1C511FD2B2 /* OnboardingScreensA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScreensA.swift; sourceTree = "<group>"; };
 		2260CAED34A5018332A69C28 /* SVG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SVG.swift; sourceTree = "<group>"; };
+		2F956C12B3B4B1857ABB9F6F /* OnboardingIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingIcons.swift; sourceTree = "<group>"; };
 		330D85C2CFAF8D8449D44CFB /* PlusJakartaSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-Medium.ttf"; sourceTree = "<group>"; };
 		427BFFEBD9203FCEC7F9F5C5 /* BedtimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BedtimeView.swift; sourceTree = "<group>"; };
 		4B60F766CDD362F80C30BA38 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		4BA12AF213B3D3BCB74E9D47 /* PaywallScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallScreen.swift; sourceTree = "<group>"; };
 		4F51BCCE23FC80668FBABE0D /* PlusJakartaSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-Bold.ttf"; sourceTree = "<group>"; };
+		552170F6D163029FDBBD7FA6 /* OnboardingScreensB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScreensB.swift; sourceTree = "<group>"; };
 		568CC05EDE60B42A007A63A2 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		6C0ED96E7A00DCFD808321E8 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
 		71B55A8E0079701CAB3CF502 /* Icons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icons.swift; sourceTree = "<group>"; };
 		8018B51C230FC006C24F0636 /* Sheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sheets.swift; sourceTree = "<group>"; };
+		81973DE64599DF9344A7224E /* OnboardingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingState.swift; sourceTree = "<group>"; };
 		8D8A4444EEC5506BFFB25422 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		9C1FD6A532581113F569AD0B /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		A628045CD65DFEA96CEAB698 /* PlusJakartaSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-Regular.ttf"; sourceTree = "<group>"; };
@@ -59,6 +72,7 @@
 		D70554A4F3B146713D753CCB /* PlusJakartaSans-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-SemiBold.ttf"; sourceTree = "<group>"; };
 		D923E0E63DDBFEA319334668 /* EarlierApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarlierApp.swift; sourceTree = "<group>"; };
 		E1FF4509A5B891B04187A8E7 /* WindDownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindDownView.swift; sourceTree = "<group>"; };
+		F8E5C0E577FE99968BFA6274 /* OnboardingFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlow.swift; sourceTree = "<group>"; };
 		F9312F33C876FEE92E642567 /* NewAlarmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAlarmView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -121,9 +135,24 @@
 				8D8A4444EEC5506BFFB25422 /* RootView.swift */,
 				2260CAED34A5018332A69C28 /* SVG.swift */,
 				568CC05EDE60B42A007A63A2 /* Theme.swift */,
+				C090FA4BC480AC90872AB100 /* Onboarding */,
 				6A68872073F3182EC59F49EB /* Screens */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		C090FA4BC480AC90872AB100 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				046B5A3353ADFF95D8226F39 /* OnboardingChrome.swift */,
+				F8E5C0E577FE99968BFA6274 /* OnboardingFlow.swift */,
+				2F956C12B3B4B1857ABB9F6F /* OnboardingIcons.swift */,
+				2080E7607159AD1C511FD2B2 /* OnboardingScreensA.swift */,
+				552170F6D163029FDBBD7FA6 /* OnboardingScreensB.swift */,
+				81973DE64599DF9344A7224E /* OnboardingState.swift */,
+				4BA12AF213B3D3BCB74E9D47 /* PaywallScreen.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		EECC3DB251693D28654753D2 = {
@@ -218,7 +247,14 @@
 				2C87077E2C2FCF5E5995C6CA /* ModalKit.swift in Sources */,
 				1A13091BB5A5D0F2ED750C14 /* Models.swift in Sources */,
 				EF0654237EE24E6C798858B9 /* NewAlarmView.swift in Sources */,
+				559059AADC660DB556937780 /* OnboardingChrome.swift in Sources */,
+				8D9108970C2AFABDAFC82A15 /* OnboardingFlow.swift in Sources */,
+				97C501E323EABE994E911AB6 /* OnboardingIcons.swift in Sources */,
+				ADF052FB5AA38CE97A0CF6C1 /* OnboardingScreensA.swift in Sources */,
+				F0B23964468AAA3D7A87AA76 /* OnboardingScreensB.swift in Sources */,
+				1CE0ADB54450210E7E7BE3C9 /* OnboardingState.swift in Sources */,
 				0476DF28313AE4903540F910 /* Overlays.swift in Sources */,
+				6983BD968B1B9D4FA3A2BFBD /* PaywallScreen.swift in Sources */,
 				CD839BE0DD0B96D3E807ED62 /* RootView.swift in Sources */,
 				09A33A118E77C49D233CB600 /* SVG.swift in Sources */,
 				D7C24B56BF7422BA9CE7AD25 /* SettingsView.swift in Sources */,

@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  body { margin:0; background:#EFEEE9; font-family:'Plus Jakarta Sans', -apple-system, sans-serif; }
+  a, a:hover { color:#000000; }
+  .scr::-webkit-scrollbar { display:none; }
+</style>
+</helmet>
+<div style="min-height:100vh; display:flex; align-items:center; justify-content:center; background:#EFEEE9; font-family:'Plus Jakarta Sans', sans-serif;">
+  <div style="width:390px; height:844px; position:relative; background:#F2F1ED; overflow:hidden; color:#000000;">
+
+    <div style="position:absolute; top:0; left:0; right:0; height:49px; display:flex; align-items:center; justify-content:space-between; padding:12px 21px 0; z-index:40; background:#F2F1ED; pointer-events:none;">
+      <div style="display:flex; align-items:center; gap:5px; font-size:14px; font-weight:600; letter-spacing:-0.2px;">
+        <span>{{ clock }}</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="#000000"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+      </div>
+      <div style="display:flex; align-items:center; gap:5px;">
+        <svg width="15" height="11" viewBox="0 0 19 13" fill="#000000"><rect x="0" y="8" width="3" height="5" rx="1"></rect><rect x="4.6" y="5.5" width="3" height="7.5" rx="1"></rect><rect x="9.2" y="3" width="3" height="10" rx="1"></rect><rect x="13.8" y="0" width="3" height="13" rx="1"></rect></svg>
+        <svg width="14" height="11" viewBox="0 0 24 18" fill="none" stroke="#000000" stroke-width="2.2" stroke-linecap="round"><path d="M2 5.5a15 15 0 0 1 20 0"></path><path d="M5.5 9.6a10 10 0 0 1 13 0"></path><path d="M9 13.6a5 5 0 0 1 6 0"></path></svg>
+        <div style="position:relative; width:21px; height:11px;">
+          <div style="position:absolute; inset:0; border-radius:4px; background:#B9B7B0;"></div>
+          <div style="position:absolute; top:0; left:0; bottom:0; width:14px; border-radius:4px 2px 2px 4px; background:#000000;"></div>
+          <div style="position:absolute; top:0; left:0; width:14px; height:11px; display:flex; align-items:center; justify-content:center; font-size:7px; font-weight:700; color:#fff;">{{ battery }}</div>
+        </div>
+      </div>
+    </div>
+
+    <sc-if value="{{ isWelcome }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute; inset:0; padding:49px 22px 23px; display:flex; flex-direction:column;">
+      <div style="flex:0.55;"></div>
+      <div style="font-size:47px; font-weight:800; letter-spacing:-1.8px;">Welcome!</div>
+      <div style="font-size:21px; color:#4E4B46; line-height:1.32; margin-top:13px;">Let's start by understanding your wake up habits<br />and routines</div>
+      <div style="display:flex; align-items:center; gap:5px; margin-top:31px; font-size:20px; letter-spacing:-1px;">
+        <span style="font-size:23px;">🌿</span>
+        <span style="color:#E8720C;">★★★★★</span>
+        <span style="font-size:23px; transform:scaleX(-1);">🌿</span>
+      </div>
+      <div style="flex:1;"></div>
+      <div onClick="{{ next }}" style="background:#000000; border-radius:27px; padding:17px; text-align:center; font-size:18px; font-weight:700; color:#fff; cursor:pointer;">Get Started</div>
+      <div style="text-align:center; font-size:14px; color:#4E4B46; margin-top:14px;">Already have an account? <span style="font-weight:800;">Sign in</span></div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isQuestion }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="font-size:27px; font-weight:800; letter-spacing:-0.9px; line-height:1.22; padding:14px 22px 0; text-wrap:pretty;">{{ title }}</div>
+      <div class="scr" style="flex:1; overflow-y:auto; scrollbar-width:none; display:flex; flex-direction:column; justify-content:{{ listAlign }}; padding:14px 22px 11px;">
+        <div style="display:flex; flex-direction:column; gap:13px;">
+          <sc-for list="{{ options }}" as="o" hint-placeholder-count="3">
+            <div onClick="{{ o.pick }}" style="background:#fff; border-radius:23px; padding:12px 14px; display:flex; align-items:center; gap:14px; border:1.5px solid {{ o.border }}; box-shadow:0 2px 9px rgba(0,0,0,0.03); cursor:pointer;">
+              <div style="width:31px; height:31px; border-radius:50%; flex:none; background:{{ o.dotBg }}; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; color:{{ o.dotColor }};">{{ o.badge }}</div>
+              <div style="font-size:17px; font-weight:500;">{{ o.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:{{ ctaBg }}; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:{{ ctaColor }}; cursor:pointer;">Continue</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isChart }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="font-size:27px; font-weight:800; letter-spacing:-0.9px; line-height:1.22; padding:14px 22px 0;">Erly prevents you from snoozing</div>
+      <div style="flex:1; display:flex; align-items:center; padding:0 22px;">
+        <div style="background:#E9E7E1; border-radius:20px; padding:18px 14px 16px; width:100%;">
+          <div style="font-size:18px; font-weight:500; padding-left:5px;">Time spent snoozing</div>
+          <div style="position:relative; margin-top:13px;">
+            <svg viewBox="0 0 320 150" width="100%" height="150">
+              <defs>
+                <linearGradient id="gRed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E4645E" stop-opacity="0.22"></stop><stop offset="1" stop-color="#E4645E" stop-opacity="0.02"></stop></linearGradient>
+              </defs>
+              <line x1="10" y1="30" x2="310" y2="30" stroke="#C6C3BC" stroke-width="1.5" stroke-dasharray="6 6"></line>
+              <line x1="10" y1="82" x2="310" y2="82" stroke="#C6C3BC" stroke-width="1.5" stroke-dasharray="6 6"></line>
+              <path d="M12 30 C 90 30, 110 20, 160 70 C 210 120, 240 128, 308 128 L308 128 L12 128 Z" fill="#DCD9D2" opacity="0.75"></path>
+              <path d="M12 40 C 70 45, 90 92, 130 96 C 190 100, 220 34, 308 14 L308 128 L12 128 Z" fill="url(#gRed)"></path>
+              <path d="M12 30 C 90 30, 110 20, 160 70 C 210 120, 240 128, 308 128" fill="none" stroke="#000000" stroke-width="3.5" stroke-linecap="round"></path>
+              <path d="M12 40 C 70 45, 90 92, 130 96 C 190 100, 220 34, 308 14" fill="none" stroke="#E4645E" stroke-width="3.5" stroke-linecap="round"></path>
+              <line x1="12" y1="128" x2="308" y2="128" stroke="#000000" stroke-width="2"></line>
+              <circle cx="14" cy="30" r="7" fill="#fff" stroke="#000000" stroke-width="3"></circle>
+              <circle cx="306" cy="128" r="7" fill="#fff" stroke="#000000" stroke-width="3"></circle>
+              <text x="228" y="46" font-family="Plus Jakarta Sans" font-size="13" font-weight="600" fill="#000000">Traditional alarm</text>
+              <text x="34" y="119" font-family="Plus Jakarta Sans" font-size="13" font-weight="700" fill="#000000">With Erly</text>
+              <text x="24" y="118" font-size="12">⏰</text>
+            </svg>
+            <div style="display:flex; justify-content:space-between; font-size:14px; color:#000000; padding:2px 7px 0;">
+              <span>Day 1</span><span>Day 30</span>
+            </div>
+          </div>
+          <div style="text-align:center; font-size:15px; color:#6E6A62; line-height:1.4; margin-top:16px;">84% of users report becoming a morning person after just 2 weeks.</div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:#000000; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:#fff; cursor:pointer;">Continue</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isSources }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="font-size:27px; font-weight:800; letter-spacing:-0.9px; line-height:1.22; padding:14px 22px 0;">Where did you hear about us?</div>
+      <div class="scr" style="flex:1; overflow-y:auto; scrollbar-width:none; padding:16px 22px 11px;">
+        <div style="display:flex; flex-direction:column; gap:13px;">
+          <sc-for list="{{ sources }}" as="s" hint-placeholder-count="7">
+            <div onClick="{{ s.pick }}" style="background:#fff; border-radius:23px; padding:12px 14px; display:flex; align-items:center; gap:14px; border:1.5px solid {{ s.border }}; box-shadow:0 2px 9px rgba(0,0,0,0.03); cursor:pointer;">
+              <div style="width:31px; height:31px; border-radius:50%; flex:none; background:{{ s.dotBg }}; display:flex; align-items:center; justify-content:center; font-family:ui-monospace,Menlo,monospace; font-size:13px; font-weight:600; color:{{ s.dotColor }};">{{ s.badge }}</div>
+              <div style="font-size:17px; font-weight:500;">{{ s.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:{{ ctaBg }}; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:{{ ctaColor }}; cursor:pointer;">Continue</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isSign }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="font-size:27px; font-weight:800; letter-spacing:-0.9px; padding:14px 22px 0;">Sign your commitment</div>
+      <div style="font-size:17px; color:#4E4B46; line-height:1.4; padding:11px 22px 0;">Promise yourself that you will wake up tomorrow at <span style="font-weight:800; color:#000000;">6:30 AM</span>, when your alarm goes off.</div>
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:0 22px;">
+        <div style="text-align:center; font-size:17px; color:#8C887F;">Sign to make it official</div>
+        <div style="background:#E7E5DF; border-radius:20px; height:180px; margin-top:13px;"></div>
+        <div style="text-align:center; font-size:15px; color:#8C887F; margin-top:14px;">Signed on August 10, 2026</div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:#B4B0A8; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:#DDDAD3; cursor:pointer;">Continue</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ next }}" style="position:absolute; inset:0; padding:49px 22px 0; display:flex; flex-direction:column; justify-content:center; cursor:pointer;">
+      <div style="text-align:center; font-size:31px; font-weight:800; letter-spacing:-1px; line-height:1.2;">We're setting everything up for you</div>
+      <div style="text-align:center; font-size:40px; font-weight:800; letter-spacing:-1.4px; margin-top:31px;">28%</div>
+      <div style="height:7px; border-radius:5px; background:#DCD9D2; margin-top:14px; overflow:hidden;">
+        <div style="height:100%; width:28%; border-radius:5px; background:#000000;"></div>
+      </div>
+      <div style="text-align:center; font-size:17px; color:#8C887F; margin-top:13px;">Calibrating motion detection</div>
+      <div style="display:flex; align-items:center; gap:13px; margin-top:32px; padding-left:20px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+        <div style="font-size:18px; font-weight:500;">Eliminate Snoozing</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isSummary }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:0 22px;">
+        <div style="display:flex; justify-content:center;">
+          <div style="width:34px; height:34px; border-radius:50%; background:#000000; display:flex; align-items:center; justify-content:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+          </div>
+        </div>
+        <div style="text-align:center; font-size:19px; color:#4E4B46; margin-top:20px;">Tomorrow, you will wake up at</div>
+        <div style="text-align:center; font-size:47px; font-weight:800; letter-spacing:-2px; margin-top:9px;">6:30 AM</div>
+        <div style="display:flex; align-items:flex-start; justify-content:center; gap:11px; margin-top:23px;">
+          <div style="text-align:center; width:70px;">
+            <div style="width:41px; height:41px; border-radius:50%; background:#000000; margin:0 auto; display:flex; align-items:center; justify-content:center;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="7.5"></circle><path d="M12 10v3.5l2.5 2"></path><path d="M5 3.5L2.5 6"></path><path d="M19 3.5L21.5 6"></path></svg>
+            </div>
+            <div style="font-size:15px; margin-top:7px;">Alarm rings</div>
+          </div>
+          <div style="padding-top:13px; color:#8C887F; font-size:16px;">→</div>
+          <div style="text-align:center; width:70px;">
+            <div style="width:41px; height:41px; border-radius:50%; background:#000000; margin:0 auto; display:flex; align-items:center; justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"></circle><path d="M12 8v5"></path><path d="M8 10h8"></path><path d="M10 13v6"></path><path d="M14 13v6"></path></svg>
+            </div>
+            <div style="font-size:15px; margin-top:7px;">Squats</div>
+          </div>
+          <div style="padding-top:13px; color:#8C887F; font-size:16px;">→</div>
+          <div style="text-align:center; width:70px;">
+            <div style="width:41px; height:41px; border-radius:50%; background:#000000; margin:0 auto; display:flex; align-items:center; justify-content:center;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2.5"></path><path d="M12 19.5V22"></path><path d="M2 12h2.5"></path><path d="M19.5 12H22"></path><path d="M5 5l1.8 1.8"></path><path d="M17.2 17.2L19 19"></path><path d="M19 5l-1.8 1.8"></path><path d="M6.8 17.2L5 19"></path></svg>
+            </div>
+            <div style="font-size:15px; margin-top:7px;">Alarm off</div>
+          </div>
+        </div>
+        <div style="text-align:center; font-size:18px; margin-top:23px;">No snoozing. No backup alarms.</div>
+        <div style="background:#fff; border-radius:20px; padding:18px 14px; margin-top:20px; box-shadow:0 2px 9px rgba(0,0,0,0.03);">
+          <div style="text-align:center; font-size:18px; font-weight:800;">Your wake-up streak</div>
+          <div style="text-align:center; font-size:15px; color:#8C887F; line-height:1.35; margin-top:5px;">Complete your mission on these days to build your streak</div>
+          <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-top:13px;">
+            <sc-for list="{{ streakDays }}" as="d" hint-placeholder-count="7">
+              <div style="aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:500; background:{{ d.bg }}; color:{{ d.color }}; border:1px solid {{ d.border }};">{{ d.label }}</div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:#000000; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:#fff; cursor:pointer;">Continue</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isSignIn }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#000000;"></div>
+      </div>
+      <div style="font-size:27px; font-weight:800; letter-spacing:-0.9px; padding:14px 22px 0;">Save your progress</div>
+      <div style="font-size:17px; color:#4E4B46; padding:11px 22px 0;">Keep your alarms and streak safe</div>
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:0 22px;">
+        <div onClick="{{ next }}" style="background:#000000; border-radius:27px; padding:16px; display:flex; align-items:center; justify-content:center; gap:11px; cursor:pointer;">
+          <span style="font-size:18px; color:#fff;">&#63743;</span>
+          <span style="font-size:18px; font-weight:700; color:#fff;">Sign in with Apple</span>
+        </div>
+        <div onClick="{{ next }}" style="background:#fff; border-radius:27px; padding:16px; display:flex; align-items:center; justify-content:center; gap:11px; margin-top:13px; box-shadow:0 2px 9px rgba(0,0,0,0.04); cursor:pointer;">
+          <span style="font-family:ui-monospace,Menlo,monospace; font-size:17px; font-weight:700; color:#8C887F;">G</span>
+          <span style="font-size:18px; font-weight:700;">Sign in with Google</span>
+        </div>
+        <div onClick="{{ next }}" style="text-align:center; font-size:16px; color:#8C887F; margin-top:18px; cursor:pointer;">Would you like to sign in later? <span style="font-weight:800; color:#000000;">Skip</span></div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isPaywall }}" hint-placeholder-val="{{ false }}">
+    <div class="scr" style="position:absolute; inset:0; padding:49px 20px 0; overflow-y:auto; scrollbar-width:none;">
+      <div style="display:flex; align-items:center; padding:11px 0 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="18" height="18" viewBox="0 0 12 20" fill="none" stroke="#B4B0A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2l-7 8 7 8"></path></svg>
+        </div>
+        <div style="flex:1;"></div>
+        <div style="font-size:17px; color:#8C887F;">Restore</div>
+      </div>
+      <div style="text-align:center; font-size:28px; font-weight:800; letter-spacing:-0.9px; line-height:1.2; margin-top:31px;">Start your 3-day FREE trial to continue.</div>
+      <div style="margin-top:32px; display:flex; flex-direction:column; gap:18px;">
+        <div style="display:flex; gap:14px; align-items:flex-start;">
+          <div style="width:40px; flex:none; display:flex; flex-direction:column; align-items:center;">
+            <div style="width:40px; height:40px; border-radius:50%; background:#F58220; display:flex; align-items:center; justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2.5"></rect><path d="M9 11V7.5a3.5 3.5 0 0 1 6.8-1.2"></path></svg>
+            </div>
+            <div style="width:11px; height:58px; background:#F9CB9C;"></div>
+          </div>
+          <div style="padding-top:4px;">
+            <div style="font-size:19px; font-weight:800;">Today</div>
+            <div style="font-size:16px; color:#8C887F; line-height:1.35; margin-top:4px;">Unlock all the app's features like no snooze alarms and more.</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:14px; align-items:flex-start; margin-top:-18px;">
+          <div style="width:40px; flex:none; display:flex; flex-direction:column; align-items:center;">
+            <div style="width:40px; height:40px; border-radius:50%; background:#F58220; display:flex; align-items:center; justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 6-3 7-3 7h18s-3-1-3-7z"></path><path d="M10.3 20a2 2 0 0 0 3.4 0"></path></svg>
+            </div>
+            <div style="width:11px; height:58px; background:#F9CB9C;"></div>
+          </div>
+          <div style="padding-top:4px;">
+            <div style="font-size:19px; font-weight:800;">In 2 Days - Reminder</div>
+            <div style="font-size:16px; color:#8C887F; line-height:1.35; margin-top:4px;">We'll send you a reminder that your trial is ending soon.</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:14px; align-items:flex-start; margin-top:-18px;">
+          <div style="width:40px; flex:none; display:flex; flex-direction:column; align-items:center;">
+            <div style="width:40px; height:40px; border-radius:50%; background:#000000; display:flex; align-items:center; justify-content:center;">
+              <svg width="20" height="16" viewBox="0 0 24 20" fill="#fff"><path d="M2 4l5 5 5-7 5 7 5-5-2 12H4z"></path></svg>
+            </div>
+            <div style="width:11px; height:47px; background:#8C887F;"></div>
+          </div>
+          <div style="padding-top:4px;">
+            <div style="font-size:19px; font-weight:800;">In 3 Days - Billing Starts</div>
+            <div style="font-size:16px; color:#8C887F; line-height:1.35; margin-top:4px;">You'll be charged on 13 Aug 2026 unless you cancel anytime before.</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:13px; margin-top:23px;">
+        <div style="background:#fff; border:1.5px solid #C8C5BE; border-radius:16px; padding:14px; display:flex; align-items:center;">
+          <div style="flex:1;">
+            <div style="font-size:17px; font-weight:700;">Weekly</div>
+            <div style="font-size:17px; margin-top:2px;">99,00 kr/wk</div>
+          </div>
+          <div style="width:25px; height:25px; border-radius:50%; border:1.5px solid #C8C5BE;"></div>
+        </div>
+        <div style="background:#fff; border:2px solid #000000; border-radius:16px; padding:14px; display:flex; align-items:center; position:relative;">
+          <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#000000; color:#fff; border-radius:13px; padding:5px 13px; font-size:14px; font-weight:700; white-space:nowrap;">3-Days FREE</div>
+          <div style="flex:1;">
+            <div style="font-size:17px; font-weight:700;">Yearly</div>
+            <div style="font-size:17px; margin-top:2px;">399,00 kr/yr</div>
+          </div>
+          <div style="width:25px; height:25px; border-radius:50%; background:#000000; display:flex; align-items:center; justify-content:center;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; gap:9px; margin-top:18px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+        <div style="font-size:18px; font-weight:700;">No Payment Due Now</div>
+      </div>
+      <div style="background:#000000; border-radius:20px; padding:18px; text-align:center; font-size:19px; font-weight:800; color:#fff; margin-top:14px;">Start My 3-Day Free Trial</div>
+      <div style="text-align:center; font-size:15px; color:#8C887F; margin-top:13px; padding-bottom:22px;">3 days free, then 399,00 kr per year ($33.25/mo)</div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isTrust }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:0 22px;">
+        <div style="display:flex; justify-content:center;">
+          <div style="width:128px; height:128px; border-radius:50%; background:#E7E5DF; display:flex; align-items:center; justify-content:center;">
+            <svg width="47" height="47" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.9" stroke-linejoin="round"><path d="M12 2.5l8 3v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6z"></path><rect x="9" y="11" width="6" height="5.4" rx="1.2" fill="#000000" stroke="none"></rect><path d="M10 11V9.6a2 2 0 0 1 4 0V11"></path></svg>
+          </div>
+        </div>
+        <div style="text-align:center; font-size:27px; font-weight:800; letter-spacing:-0.9px; line-height:1.2; margin-top:29px;">Thank you for trusting us</div>
+        <div style="text-align:center; font-size:17px; color:#8C887F; margin-top:13px;">Now let's personalize Erly for you...</div>
+        <div style="background:#fff; border-radius:20px; padding:18px; margin-top:29px; text-align:center; box-shadow:0 2px 9px rgba(0,0,0,0.03);">
+          <div style="font-size:20px;">✋</div>
+          <div style="font-size:17px; font-weight:800; line-height:1.3; margin-top:9px;">Your privacy and security matter to us.</div>
+          <div style="font-size:15px; color:#8C887F; line-height:1.4; margin-top:7px;">We promise to always keep your personal information private and secure.</div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:#B4B0A8; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:#DDDAD3; cursor:pointer;">Continue</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isChallengeList }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="font-size:27px; font-weight:800; letter-spacing:-0.9px; line-height:1.22; padding:14px 22px 0;">Set your wake-up challenge</div>
+      <div style="font-size:17px; color:#4E4B46; padding:11px 22px 0;">Complete this to dismiss your alarm</div>
+      <div class="scr" style="flex:1; overflow-y:auto; scrollbar-width:none; padding:14px 22px 11px;">
+        <div style="display:flex; flex-direction:column; gap:13px;">
+          <sc-for list="{{ missions }}" as="m" hint-placeholder-count="5">
+            <div onClick="{{ m.pick }}" style="background:#fff; border-radius:20px; padding:13px 14px; display:flex; align-items:center; gap:13px; border:1.5px solid {{ m.border }}; box-shadow:0 2px 9px rgba(0,0,0,0.03); cursor:pointer;">
+              <div style="font-size:27px; width:40px; text-align:center; flex:none;">{{ m.emoji }}</div>
+              <div style="flex:1;">
+                <div style="font-size:18px; font-weight:800; letter-spacing:-0.3px;">{{ m.name }}</div>
+                <div style="font-size:15px; color:#8C887F; line-height:1.3; margin-top:2px;">{{ m.desc }}</div>
+              </div>
+              <div style="width:31px; height:31px; border-radius:50%; flex:none; background:{{ m.badgeBg }}; display:flex; align-items:center; justify-content:center;">{{ m.badge }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:#000000; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:#fff; cursor:pointer;">Continue</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isWhy }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="font-size:27px; font-weight:800; letter-spacing:-0.9px; line-height:1.22; padding:14px 22px 0;">Why squats wake you up</div>
+      <div style="font-size:17px; color:#4E4B46; padding:11px 22px 0;">Once you're out of bed, you're up.</div>
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:0 22px;">
+        <div style="display:flex; justify-content:center;">
+          <div style="width:135px; height:135px; border-radius:16px; background:repeating-linear-gradient(45deg,#E7E4DD,#E7E4DD 5px,#F2F1ED 5px,#F2F1ED 11px); display:flex; align-items:center; justify-content:center;">
+            <span style="font-family:ui-monospace,Menlo,monospace; font-size:10px; color:#8C887F;">squat illustration</span>
+          </div>
+        </div>
+        <div style="text-align:center; font-size:15px; color:#4E4B46; line-height:1.55; margin-top:32px;">This mission forces you out from under the covers and gets your body moving. Once you're on your feet, sleep loses its grip — motion beats willpower every time.</div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:#000000; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:#fff; cursor:pointer;">Continue</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isDays }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="font-size:27px; font-weight:800; letter-spacing:-0.9px; line-height:1.22; padding:14px 22px 0;">Which days should your alarm repeat?</div>
+      <div style="font-size:17px; color:#4E4B46; padding:11px 22px 0;">Select at least one day</div>
+      <div style="flex:1; padding:16px 22px 0;">
+        <div style="background:#fff; border-radius:20px; padding:5px 16px; box-shadow:0 2px 9px rgba(0,0,0,0.03);">
+          <sc-for list="{{ weekDays }}" as="d" hint-placeholder-count="7">
+            <div onClick="{{ d.toggle }}" style="display:flex; align-items:center; padding:11px 0; cursor:pointer;">
+              <div style="flex:1; font-size:18px; font-weight:500;">{{ d.label }}</div>
+              <div style="width:27px; height:27px; border-radius:7px; background:{{ d.boxBg }}; border:1.5px solid {{ d.boxBorder }}; display:flex; align-items:center; justify-content:center;">{{ d.check }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:#000000; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:#fff; cursor:pointer;">Continue</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isBars }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="font-size:27px; font-weight:800; letter-spacing:-0.9px; line-height:1.22; padding:14px 22px 0;">Get out of bed 5x faster with Erly vs on your own</div>
+      <div style="flex:1; display:flex; align-items:center; padding:0 22px;">
+        <div style="background:#E9E7E1; border-radius:20px; padding:22px 23px 20px; width:100%;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:end;">
+            <div style="background:#fff; border-radius:13px; height:189px; position:relative; overflow:hidden;">
+              <div style="position:absolute; top:13px; left:0; right:0; text-align:center; font-size:14px; font-weight:700;">Without Erly</div>
+              <div style="position:absolute; left:0; right:0; bottom:0; height:41px; background:#CFCBC4; border-radius:13px; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:600;">20%</div>
+            </div>
+            <div style="background:#fff; border-radius:13px; height:189px; position:relative; overflow:hidden;">
+              <div style="position:absolute; top:13px; left:0; right:0; text-align:center; font-size:14px; font-weight:700;">With Erly</div>
+              <div style="position:absolute; left:0; right:0; bottom:0; height:137px; background:#000000; border-radius:13px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:13px; font-size:15px; font-weight:600; color:#fff;">5x</div>
+            </div>
+          </div>
+          <div style="text-align:center; font-size:15px; color:#8C887F; line-height:1.4; margin-top:16px;">Erly makes it easy and holds you accountable.</div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:#000000; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:#fff; cursor:pointer;">Continue</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isReferral }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="font-size:27px; font-weight:800; letter-spacing:-0.9px; padding:14px 22px 0;">Have a referral code?</div>
+      <div style="font-size:17px; color:#4E4B46; padding:11px 22px 0;">Enter it below or skip this step</div>
+      <div style="flex:1; display:flex; align-items:center; padding:0 22px;">
+        <div style="width:100%; background:#EDEBE5; border:1px solid #E2DFD8; border-radius:27px; padding:5px 5px 5px 20px; display:flex; align-items:center;">
+          <div style="flex:1; font-size:17px; color:#B4B0A8;">Referral Code</div>
+          <div style="background:#B4B0A8; border-radius:23px; padding:12px 23px; font-size:17px; font-weight:600; color:#EDEBE5;">Submit</div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:#000000; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:#fff; cursor:pointer;">Continue</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isNotify }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:0 22px;">
+        <div style="text-align:center; font-size:27px; font-weight:800; letter-spacing:-0.9px; line-height:1.22;">Reach your goals with notifications</div>
+        <div style="background:#DEDBD4; border-radius:14px; overflow:hidden; margin-top:32px;">
+          <div style="text-align:center; font-size:17px; padding:20px 22px 18px; line-height:1.3;">Erly would like to send you notifications</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; border-top:1px solid #CBC8C1;">
+            <div style="text-align:center; font-size:17px; padding:14px;">Don't Allow</div>
+            <div onClick="{{ next }}" style="text-align:center; font-size:17px; padding:14px; background:#000000; color:#fff; cursor:pointer;">Allow</div>
+          </div>
+        </div>
+        <div style="text-align:right; font-size:23px; margin-top:7px; padding-right:67px;">👆</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isInfo }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:0 22px;">
+        <div style="display:flex; justify-content:center;">
+          <div style="width:153px; height:108px; border-radius:16px; background:repeating-linear-gradient(45deg,#E7E4DD,#E7E4DD 5px,#F2F1ED 5px,#F2F1ED 11px); display:flex; align-items:center; justify-content:center;">
+            <span style="font-family:ui-monospace,Menlo,monospace; font-size:10px; color:#8C887F; text-align:center;">{{ infoArt }}</span>
+          </div>
+        </div>
+        <div style="text-align:center; font-size:27px; font-weight:800; letter-spacing:-0.9px; line-height:1.2; margin-top:40px;">{{ infoTitle }}</div>
+        <div style="text-align:center; font-size:15px; color:#4E4B46; line-height:1.55; margin-top:16px;">{{ infoBody }}</div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:#000000; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:#fff; cursor:pointer;">{{ cta }}</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isPicker }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="font-size:27px; font-weight:800; letter-spacing:-0.9px; line-height:1.22; padding:14px 22px 0;">{{ title }}</div>
+      <div style="font-size:17px; color:#4E4B46; padding:11px 22px 0; line-height:1.3;">{{ subtitle }}</div>
+      <div style="flex:1; display:flex; align-items:center; justify-content:center;">
+        <div style="position:relative; width:300px;">
+          <div style="position:absolute; left:0; right:0; top:116px; height:40px; border-radius:20px; background:#E4E2DA;"></div>
+          <div style="position:relative; display:grid; grid-template-columns:1fr 1fr; text-align:center;">
+            <div>
+              <sc-for list="{{ pickHours }}" as="h" hint-placeholder-count="7">
+                <div style="height:39px; display:flex; align-items:center; justify-content:center; font-size:{{ h.size }}; font-weight:600; color:{{ h.color }};">{{ h.v }}</div>
+              </sc-for>
+            </div>
+            <div>
+              <sc-for list="{{ pickMinutes }}" as="m" hint-placeholder-count="7">
+                <div style="height:39px; display:flex; align-items:center; justify-content:center; font-size:{{ m.size }}; font-weight:600; color:{{ m.color }};">{{ m.v }}</div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:#000000; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:#fff; cursor:pointer;">{{ cta }}</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isStatement }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:0 22px;">
+        <div style="text-align:center; font-size:27px; font-weight:800; letter-spacing:-0.9px; line-height:1.25;">Waking up at <span style="color:#E09A5F;">6:30 AM</span> is a realistic target. It's not hard at all!</div>
+        <div style="text-align:center; font-size:15px; color:#4E4B46; line-height:1.5; margin-top:22px;">90% of users say that they wake up on time after using Erly.</div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:#000000; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:#fff; cursor:pointer;">Continue</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isCompare }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; padding:49px 0 0; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:13px; padding:13px 22px 0;">
+        <div onClick="{{ prev }}" style="cursor:pointer;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"></path><path d="M10 6l-6 6 6 6"></path></svg>
+        </div>
+        <div style="flex:1; height:5px; border-radius:3px; background:#C8C5BE; overflow:hidden;">
+          <div style="height:100%; border-radius:3px; background:#000000; width:{{ progress }};"></div>
+        </div>
+      </div>
+      <div style="font-size:27px; font-weight:800; letter-spacing:-0.9px; padding:14px 22px 0;">Set Only One Alarm</div>
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:0 22px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; position:relative;">
+          <div style="background:#fff; border-radius:20px; padding:13px; height:243px; box-shadow:0 2px 9px rgba(0,0,0,0.04);">
+            <div style="font-size:14px; font-weight:800;">Traditional Alarm</div>
+            <sc-if value="{{ filled }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; flex-direction:column; gap:8px; margin-top:11px;">
+                <sc-for list="{{ tradAlarms }}" as="t" hint-placeholder-count="4">
+                  <div style="background:#F2F1ED; border-radius:11px; padding:7px 9px; display:flex; align-items:center;">
+                    <div style="flex:1;">
+                      <div style="font-size:11px; color:#8C887F; font-weight:500;">{{ t.name }}</div>
+                      <div style="font-size:15px; font-weight:800; letter-spacing:-0.5px;">{{ t.time }}</div>
+                    </div>
+                    <div style="width:34px; height:20px; border-radius:11px; background:#34C759; position:relative;">
+                      <div style="position:absolute; top:2px; right:2px; width:16px; height:16px; border-radius:50%; background:#fff;"></div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <div style="background:#fff; border-radius:20px; padding:13px; height:243px; box-shadow:0 2px 9px rgba(0,0,0,0.04);">
+            <div style="font-size:14px; font-weight:800;">Erly</div>
+            <sc-if value="{{ filled }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:11px;">
+                <div style="background:#F2F1ED; border-radius:11px; padding:7px 9px; display:flex; align-items:center;">
+                  <div style="flex:1;">
+                    <div style="font-size:11px; color:#8C887F; font-weight:500;">Alarm · Push ups</div>
+                    <div style="font-size:15px; font-weight:800; letter-spacing:-0.5px;">6:00 AM</div>
+                  </div>
+                  <div style="width:34px; height:20px; border-radius:11px; background:#34C759; position:relative;">
+                    <div style="position:absolute; top:2px; right:2px; width:16px; height:16px; border-radius:50%; background:#fff;"></div>
+                  </div>
+                </div>
+                <div style="display:flex; justify-content:center; margin-top:27px;">
+                  <div style="width:68px; height:68px; border-radius:50%; background:#34C759; display:flex; align-items:center; justify-content:center;">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+          <sc-if value="{{ filled }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; left:47px; top:108px; width:56px; height:56px; border-radius:50%; background:#FF2D18; display:flex; align-items:center; justify-content:center;">
+              <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg>
+            </div>
+          </sc-if>
+        </div>
+        <div style="text-align:center; font-size:15px; color:#6E6A62; line-height:1.42; margin-top:36px;">Stop setting backup alarms. Erly guarantees you wake up by demanding physical proof that you are out of bed.</div>
+      </div>
+      <div style="border-top:1px solid #E4E2DA; padding:14px 22px 20px;">
+        <div onClick="{{ next }}" style="background:#000000; border-radius:27px; padding:16px; text-align:center; font-size:17px; font-weight:700; color:#fff; cursor:pointer;">Continue</div>
+      </div>
+    </div>
+    </sc-if>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844}}">
+class Component extends DCLogic {
+  state = {
+    step: 0,
+    answers: { 1: 0, 2: 0, 6: 1, 11: 0, 18: 0 },
+    mission: 2,
+    days: [true, true, true, true, true, false, false]
+  };
+
+  get steps() {
+    return [
+      { kind: 'welcome' },
+      { kind: 'q', title: 'What is your gender?', options: ['Male', 'Female', 'Prefer not to say'] },
+      { kind: 'q', title: 'Do you consider yourself a morning person?', options: ['Yes', 'No'] },
+      { kind: 'sources' },
+      { kind: 'q', title: 'What is your biggest obstacle to getting out of bed?', options: ['I scroll on my phone', 'I hit snooze repeatedly', 'I sleep through my alarms', 'None of the above'] },
+      { kind: 'chart' },
+      { kind: 'q', title: 'How many alarms do you usually set?', options: ['Just one', '2 or 3', '4 or more'] },
+      { kind: 'q', title: 'Do you trust yourself to wake up after the first alarm?', options: ['Yes, always', "Sometimes, it's a gamble", 'No, never'] },
+      { kind: 'q', title: 'Do you ever turn off your alarm and go back to sleep?', options: ['Yes, it happens often', 'Sometimes', 'No, but I worry I might', 'No, never'] },
+      { kind: 'compare', filled: false },
+      { kind: 'compare', filled: true },
+      { kind: 'q', title: 'How do you usually feel when you set your alarm at night?', options: ['Motivated and ready', 'Anxious about sleep', "Defeated, I know I'll snooze", 'Neutral'] },
+      { kind: 'q', title: 'When the alarm rings, what is your immediate thought?', options: ['I\u2019m up!', "I'll get up after the next alarm", 'Just 5 more minutes...', 'Why did I set this?'] },
+      { kind: 'q', title: 'Do you negotiate with yourself to stay in bed?', options: ['Yes, I make deals with myself', 'No, I get right up'] },
+      { kind: 'info', art: 'brain illustration', title: "It's not a discipline problem", body: "You aren't lazy. You are fighting biology. When the alarm rings, your brain's prefrontal cortex (the self-control part) is offline. This sleep inertia makes snoozing feel like the only decision." },
+      { kind: 'picker', title: 'What time do you usually get out of bed?', subtitle: "Be honest - we won't judge", hour: 8, minute: 0 },
+      { kind: 'picker', title: 'What time would you like to get out of bed?', subtitle: 'The time you wish you could wake up every day', hour: 6, minute: 30 },
+      { kind: 'statement' },
+      { kind: 'q', title: 'How do you feel immediately after waking up?', options: ['Ready to go', 'Still sleepy', 'Anxious or stressed', 'None of the above'] },
+      { kind: 'q', title: 'How long does it usually take you to feel fully awake?', options: ['Instantly', '10-15 minutes', '30 minutes or more'] },
+      { kind: 'q', title: 'What do you currently rely on to clear that brain fog?', options: ['Coffee or caffeine', 'Scrolling social media', 'Showering', 'Sheer willpower', 'Something else'] },
+      { kind: 'info', art: 'push-up illustration', title: 'Wake the body to wake the mind', body: 'Physical movement spikes cortisol (the wake-up hormone) and clears sleep inertia instantly. By the time the alarm is off, you are fully awake.' },
+      { kind: 'trust' },
+      { kind: 'info', art: 'sunrise illustration', title: "Let's build your wake up protocol", body: 'We will now calibrate Erly to your physical ability and sleep depth.', cta: 'Build my protocol' },
+      { kind: 'picker', title: 'You set a goal. Now set the alarm.', subtitle: "Earlier, you identified 6:30 AM as your ideal wake up time. Let's set your first alarm for this time.", hour: 6, minute: 30, cta: 'Commit to 6:30 AM' },
+      { kind: 'missions' },
+      { kind: 'why' },
+      { kind: 'days' },
+      { kind: 'bars' },
+      { kind: 'referral' },
+      { kind: 'notify' },
+      { kind: 'sign' },
+      { kind: 'loading' },
+      { kind: 'summary' },
+      { kind: 'signin' },
+      { kind: 'paywall' }
+    ];
+  }
+
+  wheel(center, mod, pad) {
+    const out = [];
+    for (let d = -3; d <= 3; d++) {
+      const v = ((center + d) % mod + mod) % mod;
+      const a = Math.abs(d);
+      out.push({
+        v: pad ? String(v).padStart(2, '0') : String(v),
+        size: a === 0 ? '23px' : '22px',
+        color: a === 0 ? '#000000' : (a === 1 ? '#B4B0A8' : (a === 2 ? '#CFCBC4' : '#E2DFD8'))
+      });
+    }
+    return out;
+  }
+
+  pick(i) {
+    return () => this.setState(s => ({ answers: { ...s.answers, [s.step]: i } }));
+  }
+
+  renderVals() {
+    const step = this.state.step;
+    const s = this.steps[step];
+    const answer = this.state.answers[step];
+    const answered = answer !== undefined && answer !== null;
+    const mk = (label, i, badge) => ({
+      label,
+      badge: answer === i ? React.createElement('svg', { width: 17, height: 17, viewBox: '0 0 24 24', fill: 'none', stroke: '#fff', strokeWidth: 3, strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'M5 12.5l4.5 4.5L19 7' })) : badge,
+      border: answer === i ? '#4CD268' : 'transparent',
+      dotBg: answer === i ? '#4CD268' : '#EDEBE4',
+      dotColor: answer === i ? '#fff' : '#6E6A62',
+      pick: this.pick(i)
+    });
+    const srcNames = ['YouTube', 'TikTok', 'Instagram', 'App Store', 'Facebook', 'Google', 'X'];
+    return {
+      clock: step >= 29 ? '19:06' : (step >= 10 ? '19:05' : '19:04'),
+      battery: step >= 20 ? '35' : (step >= 14 ? '36' : '37'),
+      isWelcome: s.kind === 'welcome',
+      isQuestion: s.kind === 'q',
+      isChart: s.kind === 'chart',
+      isSources: s.kind === 'sources',
+      isCompare: s.kind === 'compare',
+      isInfo: s.kind === 'info',
+      isTrust: s.kind === 'trust',
+      isChallengeList: s.kind === 'missions',
+      isWhy: s.kind === 'why',
+      isDays: s.kind === 'days',
+      isBars: s.kind === 'bars',
+      isReferral: s.kind === 'referral',
+      isNotify: s.kind === 'notify',
+      isSign: s.kind === 'sign',
+      isLoading: s.kind === 'loading',
+      isSummary: s.kind === 'summary',
+      isSignIn: s.kind === 'signin',
+      isPaywall: s.kind === 'paywall',
+      streakDays: [['S', 0], ['M', 1], ['T', 1], ['W', 1], ['T', 1], ['F', 1], ['S', 0]].map(([l, on]) => ({
+        label: l,
+        bg: on ? '#fff' : '#EDEBE4',
+        color: on ? '#000000' : '#B4B0A8',
+        border: on ? '#E4DFE8' : 'transparent'
+      })),
+      cta: s.cta || 'Continue',
+      missions: [
+        { emoji: '🔍', name: 'Item Search', desc: 'Find and photograph a random item' },
+        { emoji: '🏋️', name: 'Push Ups', desc: 'Complete push-ups to start your day strong' },
+        { emoji: '🏃', name: 'Squats', desc: 'Complete squats to start your day strong' },
+        { emoji: '📖', name: 'Bible Verse', desc: 'Read a Bible verse out loud to begin your morning' },
+        { emoji: '🕊️', name: 'Devotional', desc: 'Read a short devotional to center your day' }
+      ].map((m, i) => ({
+        emoji: m.emoji, name: m.name, desc: m.desc,
+        border: this.state.mission === i ? '#D8D5CE' : 'transparent',
+        badgeBg: this.state.mission === i ? '#34C759' : '#EDEBE4',
+        badge: this.state.mission === i
+          ? React.createElement('svg', { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: '#fff', strokeWidth: 3, strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'M5 12.5l4.5 4.5L19 7' }))
+          : React.createElement('svg', { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: '#8C887F', strokeWidth: 1.9 }, [
+              React.createElement('path', { key: 1, d: 'M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z' }),
+              React.createElement('circle', { key: 2, cx: 12, cy: 12, r: 2.6, fill: '#8C887F', stroke: 'none' })
+            ]),
+        pick: () => this.setState({ mission: i })
+      })),
+      weekDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((d, i) => ({
+        label: d,
+        boxBg: this.state.days[i] ? '#000000' : 'transparent',
+        boxBorder: this.state.days[i] ? '#000000' : '#D4D1CA',
+        check: this.state.days[i]
+          ? React.createElement('svg', { width: 17, height: 17, viewBox: '0 0 24 24', fill: 'none', stroke: '#fff', strokeWidth: 3, strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'M5 12.5l4.5 4.5L19 7' }))
+          : null,
+        toggle: () => this.setState(st => {
+          const days = st.days.slice();
+          days[i] = !days[i];
+          return { days };
+        })
+      })),
+      isPicker: s.kind === 'picker',
+      isStatement: s.kind === 'statement',
+      infoArt: s.art || '',
+      infoTitle: s.kind === 'info' ? s.title : '',
+      infoBody: s.body || '',
+      subtitle: s.subtitle || '',
+      pickHours: this.wheel(s.hour || 0, 24, true),
+      pickMinutes: this.wheel(s.minute || 0, 60, true),
+      filled: !!s.filled,
+      title: s.title || '',
+      progress: Math.round((step / (this.steps.length - 1)) * 100) + '%',
+      listAlign: (s.options && s.options.length > 3) ? 'center' : 'flex-end',
+      options: (s.options || []).map((o, i) => mk(o, i, String(i + 1))),
+      sources: srcNames.map((o, i) => mk(o, i, o.slice(0, 1))),
+      ctaBg: answered ? '#000000' : '#B4B0A8',
+      ctaColor: answered ? '#fff' : '#DDDAD3',
+      tradAlarms: [
+        { name: 'First alarm', time: '6:00 AM' },
+        { name: 'Second alarm', time: '6:02 AM' },
+        { name: 'Third alarm', time: '6:05 AM' },
+        { name: 'Fourth alarm', time: '6:10 AM' }
+      ],
+      next: () => this.setState(st => ({ step: Math.min(st.step + 1, this.steps.length - 1) })),
+      prev: () => this.setState(st => ({ step: Math.max(st.step - 1, 0) }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

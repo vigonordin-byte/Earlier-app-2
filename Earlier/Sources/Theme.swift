@@ -56,6 +56,17 @@ enum C {
 
     static let disabledBtn  = Color(hex: "CFCBC2")
     static let disabledInk  = Color(hex: "EFEEE9")
+
+    // Onboarding
+    static let inkMuted     = Color(hex: "4E4B46")
+    static let progressTrk  = Color(hex: "C8C5BE")
+    static let greenSel     = Color(hex: "4CD268")
+    static let green2       = Color(hex: "34C759")
+    static let chartBg      = Color(hex: "E9E7E1")
+    static let ctaOff       = Color(hex: "B4B0A8")
+    static let ctaOffInk    = Color(hex: "DDDAD3")
+    static let orangeSoft   = Color(hex: "E09A5F")
+    static let orangePay    = Color(hex: "F58220")
 }
 
 // MARK: - Plus Jakarta Sans font helper
