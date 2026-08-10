@@ -1,7 +1,10 @@
 import SwiftUI
+import SwiftData
 
 struct SettingsView: View {
     @AppStorage("hasOnboarded") private var onboarded = false
+    @Environment(\.modelContext) private var ctx
+    @Query private var alarms: [AlarmModel]
     var body: some View {
         ScreenScaffold(topGap: 6) {
             Text("Settings").jk(32, 800, tracking: -1)
@@ -42,6 +45,16 @@ struct SettingsView: View {
 
             sectionLabel("Developer")
             SettingsCard {
+                Button {
+                    let id = (alarms.first(where: \.enabled) ?? alarms.first)?.id
+                    AlarmCenter.shared.requestPermission { granted in
+                        if granted { AlarmCenter.shared.scheduleTest(alarmID: id) }
+                    }
+                } label: {
+                    SettingsRow(icon: Icons.clock, title: "Test alarm (10s)")
+                        .contentShape(Rectangle())
+                }.buttonStyle(.plain)
+                HDivider()
                 Button { onboarded = false } label: {
                     SettingsRow(icon: Icons.chart, title: "Replay onboarding")
                         .contentShape(Rectangle())

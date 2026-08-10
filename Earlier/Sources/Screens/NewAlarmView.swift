@@ -84,6 +84,7 @@ struct NewAlarmView: View {
             soundName: "Default", challengeName: "Push ups", enabled: true)
         ctx.insert(alarm)
         try? ctx.save()
+        AlarmCenter.shared.rescheduleAll(ctx)
         app.back()
     }
 

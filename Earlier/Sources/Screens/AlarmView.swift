@@ -46,6 +46,7 @@ struct AlarmView: View {
                 Spacer()
                 Button {
                     a.enabled.toggle(); a.touch(); try? ctx.save()
+                    AlarmCenter.shared.rescheduleAll(ctx)
                 } label: {
                     TogglePill(on: a.enabled).padding(.bottom, 5)
                 }.buttonStyle(.plain)
@@ -56,6 +57,7 @@ struct AlarmView: View {
         .contextMenu {
             Button(role: .destructive) {
                 ctx.delete(a); try? ctx.save()
+                AlarmCenter.shared.rescheduleAll(ctx)
             } label: { Label("Delete alarm", systemImage: "trash") }
         }
     }

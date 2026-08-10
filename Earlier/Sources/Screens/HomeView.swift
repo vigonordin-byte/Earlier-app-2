@@ -1,7 +1,22 @@
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
     @EnvironmentObject var app: AppState
+    @Query private var alarms: [AlarmModel]
+
+    private var nextAlarm: (alarm: AlarmModel, date: Date)? {
+        alarms.filter(\.enabled)
+            .compactMap { a in AlarmCenter.nextFireDate(a).map { (a, $0) } }
+            .min { $0.1 < $1.1 }
+    }
+    private var nextDayLabel: String {
+        guard let d = nextAlarm?.date else { return "No alarm set" }
+        if Calendar.current.isDateInToday(d) { return "Today" }
+        if Calendar.current.isDateInTomorrow(d) { return "Tomorrow" }
+        let f = DateFormatter(); f.dateFormat = "EEEE"
+        return f.string(from: d)
+    }
 
     var body: some View {
         ScreenScaffold(topGap: 6) {
@@ -39,21 +54,22 @@ struct HomeView: View {
     }
 
     private var nextAlarmCard: some View {
-        VStack(spacing: 0) {
+        let a = nextAlarm?.alarm
+        return VStack(spacing: 0) {
             Text("NEXT ALARM").jk(11, 600, tracking: 3.2).foregroundColor(C.muted3)
-            Text("6:30 AM").jk(47, 800, tracking: -2).padding(.top, 7)
-            Text("Tomorrow").jk(16).foregroundColor(C.muted).padding(.top, 2)
+            Text(a?.timeLabel ?? "—").jk(47, 800, tracking: -2).padding(.top, 7)
+            Text(nextDayLabel).jk(16).foregroundColor(C.muted).padding(.top, 2)
             HDivider(color: C.divider2).padding(.horizontal, 17).padding(.top, 19)
             HStack(spacing: 0) {
                 VStack(spacing: 0) {
-                    Text("🏋️").font(.system(size: 22))
-                    Text("Push ups").jk(16, 700).padding(.top, 13)
+                    Text(ChallengeGlyph.emoji(a?.challengeName ?? "Push ups")).font(.system(size: 22))
+                    Text(a?.challengeName ?? "Push ups").jk(16, 700).padding(.top, 13)
                     Text("Challenge").jk(14).foregroundColor(C.muted).padding(.top, 4)
                 }.frame(maxWidth: .infinity)
                 Rectangle().fill(C.divider2).frame(width: 1, height: 74)
                 VStack(spacing: 0) {
                     SVGIcon(Icons.speakerBirds, stroke: C.ink, lineWidth: 1.9, w: 24).frame(height: 24)
-                    Text("Birds").jk(16, 700).padding(.top, 10)
+                    Text(a?.soundName ?? "Default").jk(16, 700).padding(.top, 10)
                     Text("Sound").jk(14).foregroundColor(C.muted).padding(.top, 4)
                 }.frame(maxWidth: .infinity)
             }

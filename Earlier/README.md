@@ -4,6 +4,16 @@ Native **SwiftUI** implementation of the *Earlier* wake-up / alarm app, built fr
 Claude Design imports (`Earlier Onboarding.dc.html` + `Earlier App.dc.html`). The app
 launches into the **onboarding flow** (36 steps), then transitions into the **main app**.
 
+**Alarms fire (Phase 1, done):** enabled alarms are scheduled as local notifications
+(`UserNotifications`, one repeating trigger per active weekday; one-shots disarm after
+firing). The onboarding "Allow" screen requests the real system permission. When an alarm
+fires, a full-screen ringing view takes over; dismissing writes a `WakeLog` (streak fuel
+for Phase 3). Settings → Developer → *Test alarm (10s)* fires one on demand. The
+scheduling surface (`Sources/Alarms/AlarmCenter.swift`) is kept small so an AlarmKit
+backend (true lock-screen ring-through) can replace it later. Known limitation of the
+notification baseline: on a locked/silenced device it plays the short notification sound
+rather than ringing continuously.
+
 **Data (Phase 0, done):** alarms and bedtimes are real, persisted **SwiftData** records
 (create / toggle / delete, seeded from the onboarding choices). The app is **local-first**
 so it works fully offline. Onboarding completion is persisted (`@AppStorage`), with a

@@ -23,6 +23,7 @@ struct OnboardingFlow: View {
                                   challengeName: mission, enabled: true))
         }
         try? ctx.save()
+        AlarmCenter.shared.rescheduleAll(ctx)
     }
 
     var body: some View {
