@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @AppStorage("hasOnboarded") private var onboarded = false
     var body: some View {
         ScreenScaffold(topGap: 6) {
             Text("Settings").jk(32, 800, tracking: -1)
@@ -37,6 +38,14 @@ struct SettingsView: View {
                 SettingsRow(icon: Icons.logout, title: "Log out")
                 HDivider()
                 SettingsRow(icon: Icons.deleteUser, title: "Delete account", titleColor: C.red)
+            }
+
+            sectionLabel("Developer")
+            SettingsCard {
+                Button { onboarded = false } label: {
+                    SettingsRow(icon: Icons.chart, title: "Replay onboarding")
+                        .contentShape(Rectangle())
+                }.buttonStyle(.plain)
             }
 
             Text("Version 1.0.0").jk(16).foregroundColor(C.muted2)

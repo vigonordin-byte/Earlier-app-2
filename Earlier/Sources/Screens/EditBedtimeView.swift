@@ -1,13 +1,21 @@
 import SwiftUI
+import SwiftData
 
 struct EditBedtimeView: View {
     @EnvironmentObject var app: AppState
+    @Environment(\.modelContext) private var ctx
+    @State private var name = ""
+    @State private var days = [false, true, true, true, true, true, false]  // Mon–Fri
 
     var body: some View {
         SheetContainer(bg: C.sheetBg, onScrim: { app.back() }) {
             header.padding(.top, 13)
 
-            FieldPlaceholder(text: "Bedtime name").padding(.top, 19)
+            TextField("Bedtime name", text: $name)
+                .font(JK.font(18, 500)).foregroundColor(C.ink).tint(C.ink)
+                .padding(.horizontal, 19).padding(.vertical, 17)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .card(22).padding(.top, 19)
 
             HStack {
                 Text("Bedtime").jk(18, 700)
@@ -32,12 +40,14 @@ struct EditBedtimeView: View {
                 .contentShape(Rectangle())
             }.buttonStyle(.plain).padding(.top, 13)
 
-            Text("Delete bedtime").jk(19, 800).foregroundColor(C.red)
-                .frame(maxWidth: .infinity).padding(.vertical, 16)
-                .background(RoundedRectangle(cornerRadius: 27, style: .continuous).fill(C.redSoftBg))
-                .padding(.top, 19)
+            Button { app.back() } label: {
+                Text("Delete bedtime").jk(19, 800).foregroundColor(C.red)
+                    .frame(maxWidth: .infinity).padding(.vertical, 16)
+                    .background(RoundedRectangle(cornerRadius: 27, style: .continuous).fill(C.redSoftBg))
+                    .contentShape(Rectangle())
+            }.buttonStyle(.plain).padding(.top, 19)
 
-            PrimaryButton(title: "Save changes") { app.back() }.padding(.top, 12)
+            PrimaryButton(title: "Save changes") { saveBedtime() }.padding(.top, 12)
         }
     }
 
@@ -60,9 +70,19 @@ struct EditBedtimeView: View {
     private var daysCard: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("On these nights:").jk(16).foregroundColor(Color(hex: "6E6A62"))
-            DayCircles().padding(.top, 12)
+            DayPicker(selected: $days).padding(.top, 12)
         }
         .padding(.horizontal, 17).padding(.top, 15).padding(.bottom, 19)
         .card(22)
+    }
+
+    private func saveBedtime() {
+        let bedtime = BedtimeModel(
+            name: name.trimmingCharacters(in: .whitespaces).isEmpty ? "Bedtime" : name,
+            hour: 22, minute: 30,
+            repeatMask: Weekdays.maskFromPicker(days), enabled: true)
+        ctx.insert(bedtime)
+        try? ctx.save()
+        app.back()
     }
 }

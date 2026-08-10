@@ -1,7 +1,11 @@
 import SwiftUI
+import SwiftData
 
 struct AlarmView: View {
     @EnvironmentObject var app: AppState
+    @Environment(\.modelContext) private var ctx
+    @Query(sort: [SortDescriptor(\AlarmModel.hour), SortDescriptor(\AlarmModel.minute)])
+    private var alarms: [AlarmModel]
 
     var body: some View {
         ScreenScaffold(topGap: 6) {
@@ -9,7 +13,7 @@ struct AlarmView: View {
                 .padding(.horizontal, 22).padding(.top, 6)
 
             VStack(spacing: 21) {
-                ForEach(Mock.alarms) { a in
+                ForEach(alarms) { a in
                     alarmCard(a)
                 }
             }
@@ -17,13 +21,13 @@ struct AlarmView: View {
         }
     }
 
-    private func alarmCard(_ a: AlarmItem) -> some View {
+    private func alarmCard(_ a: AlarmModel) -> some View {
         VStack(spacing: 0) {
             HStack(spacing: 12) {
                 Text(a.name).jk(17, 700).fixedSize()
                 HStack(spacing: 8) {
-                    Text("🏋️").font(.system(size: 14))
-                    Text("Push ups").jk(15, 600).foregroundColor(Color(hex: "6E6A62")).fixedSize()
+                    Text(ChallengeGlyph.emoji(a.challengeName)).font(.system(size: 14))
+                    Text(a.challengeName).jk(15, 600).foregroundColor(Color(hex: "6E6A62")).fixedSize()
                 }
                 .padding(.horizontal, 15).padding(.vertical, 8)
                 .fill(C.chip, 19)
@@ -36,14 +40,23 @@ struct AlarmView: View {
 
             HStack(alignment: .bottom) {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("Weekdays").jk(15, 500).foregroundColor(C.muted2)
-                    Text(a.time).jk(34, 800, tracking: -1.4).padding(.top, 2)
+                    Text(a.daysLabel).jk(15, 500).foregroundColor(C.muted2)
+                    Text(a.timeLabel).jk(34, 800, tracking: -1.4).padding(.top, 2)
                 }
                 Spacer()
-                TogglePill(on: false).padding(.bottom, 5)
+                Button {
+                    a.enabled.toggle(); a.touch(); try? ctx.save()
+                } label: {
+                    TogglePill(on: a.enabled).padding(.bottom, 5)
+                }.buttonStyle(.plain)
             }
             .padding(EdgeInsets(top: 13, leading: 17, bottom: 17, trailing: 17))
         }
         .card(24)
+        .contextMenu {
+            Button(role: .destructive) {
+                ctx.delete(a); try? ctx.save()
+            } label: { Label("Delete alarm", systemImage: "trash") }
+        }
     }
 }

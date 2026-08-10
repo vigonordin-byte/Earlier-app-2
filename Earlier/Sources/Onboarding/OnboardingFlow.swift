@@ -1,8 +1,29 @@
 import SwiftUI
+import SwiftData
 
 struct OnboardingFlow: View {
     @StateObject private var state = OnboardingState()
+    @Environment(\.modelContext) private var ctx
     var onFinish: () -> Void
+
+    /// Apply the user's onboarding choices to their first alarm (6:30 AM,
+    /// chosen mission + repeat days), creating it if the store is empty.
+    private func applyOnboarding() {
+        var mask = 0
+        for (i, on) in state.days.enumerated() where on { mask |= (1 << i) }  // state.days is Mon-first
+        let mission = onboardingMissions.indices.contains(state.mission)
+            ? onboardingMissions[state.mission].name : "Push ups"
+        let existing = try? ctx.fetch(FetchDescriptor<AlarmModel>())
+        if let alarm = existing?.first {
+            alarm.hour = 6; alarm.minute = 30; alarm.repeatMask = mask
+            alarm.challengeName = mission; alarm.enabled = true; alarm.touch()
+        } else {
+            ctx.insert(AlarmModel(name: "First alarm", hour: 6, minute: 30,
+                                  repeatMask: mask, soundName: "Birds",
+                                  challengeName: mission, enabled: true))
+        }
+        try? ctx.save()
+    }
 
     var body: some View {
         GeometryReader { geo in
@@ -56,7 +77,7 @@ struct OnboardingFlow: View {
         case .signin:
             SignInScreen()
         case .paywall:
-            PaywallScreen(onFinish: onFinish)
+            PaywallScreen(onFinish: { applyOnboarding(); onFinish() })
         }
     }
 }

@@ -1,7 +1,11 @@
 import SwiftUI
+import SwiftData
 
 struct NewAlarmView: View {
     @EnvironmentObject var app: AppState
+    @Environment(\.modelContext) private var ctx
+    @State private var name = ""
+    @State private var days = [false, true, true, true, true, true, false]  // Mon–Fri
 
     var body: some View {
         SheetContainer(bg: C.phoneBg, onScrim: { app.back() }) {
@@ -9,7 +13,11 @@ struct NewAlarmView: View {
 
             segmented.padding(.top, 19)
 
-            FieldPlaceholder(text: "Alarm name").padding(.top, 13)
+            TextField("Alarm name", text: $name)
+                .font(JK.font(18, 500)).foregroundColor(C.ink).tint(C.ink)
+                .padding(.horizontal, 19).padding(.vertical, 17)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .card(22).padding(.top, 13)
 
             Button { app.openSub(.time) } label: {
                 HStack {
@@ -26,7 +34,7 @@ struct NewAlarmView: View {
             daysCard.padding(.top, 13)
             optionsCard.padding(.top, 13)
 
-            PrimaryButton(title: "Save alarm") { app.back() }.padding(.top, 15)
+            PrimaryButton(title: "Save alarm") { saveAlarm() }.padding(.top, 15)
         }
     }
 
@@ -62,10 +70,21 @@ struct NewAlarmView: View {
     private var daysCard: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("On these days:").jk(16).foregroundColor(Color(hex: "6E6A62"))
-            DayCircles().padding(.top, 12)
+            DayPicker(selected: $days).padding(.top, 12)
         }
         .padding(.horizontal, 17).padding(.top, 15).padding(.bottom, 19)
         .card(22)
+    }
+
+    private func saveAlarm() {
+        let alarm = AlarmModel(
+            name: name.trimmingCharacters(in: .whitespaces).isEmpty ? "Alarm" : name,
+            hour: 6, minute: 30,
+            repeatMask: Weekdays.maskFromPicker(days),
+            soundName: "Default", challengeName: "Push ups", enabled: true)
+        ctx.insert(alarm)
+        try? ctx.save()
+        app.back()
     }
 
     private var optionsCard: some View {

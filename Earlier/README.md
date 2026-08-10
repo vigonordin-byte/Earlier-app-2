@@ -3,8 +3,16 @@
 Native **SwiftUI** implementation of the *Earlier* wake-up / alarm app, built from the
 Claude Design imports (`Earlier Onboarding.dc.html` + `Earlier App.dc.html`). The app
 launches into the **onboarding flow** (36 steps), then transitions into the **main app**.
-This target covers **all screens and navigation** using the design's mock data (no alarm
-scheduling / persistence yet).
+
+**Data (Phase 0, done):** alarms and bedtimes are real, persisted **SwiftData** records
+(create / toggle / delete, seeded from the onboarding choices). The app is **local-first**
+so it works fully offline. Onboarding completion is persisted (`@AppStorage`), with a
+*Replay onboarding* item under Settings → Developer. Minimum iOS is **26.0**.
+
+**Backend (upcoming):** `Sources/Store/SupabaseConfig.swift` holds the Supabase project
+URL + **anon (public)** key, ready for the auth + cloud-backup layer. SwiftData stays the
+source of truth; Supabase only mirrors data for accounts/backup. Data is protected by
+Row-Level Security policies (added when the tables are created).
 
 ## Requirements
 
