@@ -4,6 +4,16 @@ Native **SwiftUI** implementation of the *Earlier* wake-up / alarm app, built fr
 Claude Design imports (`Earlier Onboarding.dc.html` + `Earlier App.dc.html`). The app
 launches into the **onboarding flow** (36 steps), then transitions into the **main app**.
 
+**Anti-dismiss enforcement (done):** swiping the alarm notification away does NOT stop
+the alarm — an Alarmy-style **barrage** stacks ~24 follow-up notifications 10s apart
+(each playing the bundled 24s `alarm.caf` tone), so the phone keeps ringing until the
+challenge is completed in the app. Opening the app "normally" is no escape either:
+`checkMissedRing` forces the ringing screen if a recent alarm has no logged wake. While
+ringing in-app, a looping siren plays via the audio session. Completing the challenge is
+the only silence: it cancels the remaining barrage, clears delivered notifications, and
+reschedules. (Hard ceiling of the notification approach: if the phone stays locked and
+untouched, iOS won't ring literally forever — AlarmKit is the future upgrade for that.)
+
 **Challenges dismiss the alarm (Phase 2, done):** the ringing screen now requires the
 alarm's challenge (`Sources/Challenges/`): **Math problem** (generated problem + keypad),
 **Push ups / Squats** (CoreMotion accelerometer rep counter; manual tap-per-rep fallback

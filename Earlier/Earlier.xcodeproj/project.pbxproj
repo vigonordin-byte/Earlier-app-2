@@ -35,12 +35,14 @@
 		A7E59D88AEBA61C2B471FBB5 /* PersistModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02592F4F6108F52D03A1306A /* PersistModels.swift */; };
 		AAA399102C2E0E38FD8CD1BD /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FAF566FB5E7E0294140845A /* HomeView.swift */; };
 		AAE08C2C9D2D968AEE7196AE /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7020382CB5F4D261AC03F1F /* HistoryView.swift */; };
+		AC36688E86A0FA22671589AB /* AlarmTone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1328047BD3E4DE782D7F9B0D /* AlarmTone.swift */; };
 		ADF052FB5AA38CE97A0CF6C1 /* OnboardingScreensA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2080E7607159AD1C511FD2B2 /* OnboardingScreensA.swift */; };
 		B41180A000145F99F227AFAF /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4389AF6B24C1CB1DC147C16 /* SupabaseConfig.swift */; };
 		C13A1BE42174F9E87687050E /* Sheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8018B51C230FC006C24F0636 /* Sheets.swift */; };
 		C51AAD45F8BA7E9EEA31F490 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0ED96E7A00DCFD808321E8 /* Components.swift */; };
 		CD839BE0DD0B96D3E807ED62 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D8A4444EEC5506BFFB25422 /* RootView.swift */; };
 		D1D379B869237E012B7F6916 /* DayPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6CD74D86361249D750B403 /* DayPicker.swift */; };
+		D5487E30D94539A3CC5BDE48 /* alarm.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9429A44DF1EFBAA13F19AC82 /* alarm.caf */; };
 		D7C24B56BF7422BA9CE7AD25 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B60F766CDD362F80C30BA38 /* SettingsView.swift */; };
 		E2DE43A33ACF960592E4E21F /* PlusJakartaSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D70554A4F3B146713D753CCB /* PlusJakartaSans-SemiBold.ttf */; };
 		E88E3ACBD9F35BAA2C33A2E1 /* PlusJakartaSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4F51BCCE23FC80668FBABE0D /* PlusJakartaSans-Bold.ttf */; };
@@ -54,6 +56,7 @@
 		03FD1229BBED703E9F9B242E /* ReadAloudChallenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadAloudChallenge.swift; sourceTree = "<group>"; };
 		046B5A3353ADFF95D8226F39 /* OnboardingChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingChrome.swift; sourceTree = "<group>"; };
 		0DC2E0E025F8F4CE2BFB7DB0 /* ModalKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalKit.swift; sourceTree = "<group>"; };
+		1328047BD3E4DE782D7F9B0D /* AlarmTone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmTone.swift; sourceTree = "<group>"; };
 		15797D2E67B751B314F88D09 /* EditBedtimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBedtimeView.swift; sourceTree = "<group>"; };
 		1C9BEFB0B491B855B9724C11 /* PlusJakartaSans-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-ExtraBold.ttf"; sourceTree = "<group>"; };
 		1FAF566FB5E7E0294140845A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -74,6 +77,7 @@
 		8018B51C230FC006C24F0636 /* Sheets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sheets.swift; sourceTree = "<group>"; };
 		81973DE64599DF9344A7224E /* OnboardingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingState.swift; sourceTree = "<group>"; };
 		8D8A4444EEC5506BFFB25422 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		9429A44DF1EFBAA13F19AC82 /* alarm.caf */ = {isa = PBXFileReference; path = alarm.caf; sourceTree = "<group>"; };
 		9C1FD6A532581113F569AD0B /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		A628045CD65DFEA96CEAB698 /* PlusJakartaSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-Regular.ttf"; sourceTree = "<group>"; };
 		A8F8E2174F61ABE97F5D032F /* Overlays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Overlays.swift; sourceTree = "<group>"; };
@@ -133,6 +137,7 @@
 			children = (
 				61FE27E6048AD138077B182F /* AlarmCenter.swift */,
 				BB0EB2DDD918DB5E1401D63B /* AlarmRingingView.swift */,
+				1328047BD3E4DE782D7F9B0D /* AlarmTone.swift */,
 			);
 			path = Alarms;
 			sourceTree = "<group>";
@@ -165,6 +170,7 @@
 		836B41054D6DBDA136789907 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				9429A44DF1EFBAA13F19AC82 /* alarm.caf */,
 				40FC004FCBC3C659793B6E90 /* Fonts */,
 			);
 			path = Resources;
@@ -276,6 +282,7 @@
 				0B62C2E9BB68AD788F1DBB5D /* PlusJakartaSans-Medium.ttf in Resources */,
 				7A6B6B649551AAB4936B028D /* PlusJakartaSans-Regular.ttf in Resources */,
 				E2DE43A33ACF960592E4E21F /* PlusJakartaSans-SemiBold.ttf in Resources */,
+				D5487E30D94539A3CC5BDE48 /* alarm.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,6 +295,7 @@
 			files = (
 				241DC4129E2113450E14366A /* AlarmCenter.swift in Sources */,
 				129FB989703C12654E925881 /* AlarmRingingView.swift in Sources */,
+				AC36688E86A0FA22671589AB /* AlarmTone.swift in Sources */,
 				3B8DF5920B7F5C78A55BED97 /* AlarmView.swift in Sources */,
 				52C89B13DD7F53230BDA5AEE /* AppState.swift in Sources */,
 				EC9660DB7A62080CE2AD777F /* BedtimeView.swift in Sources */,

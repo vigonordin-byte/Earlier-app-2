@@ -31,11 +31,15 @@ struct EarlierApp: App {
             .onAppear {
                 Persistence.seedIfEmpty(container.mainContext)
                 AlarmCenter.shared.activate()
+                // Opening the app is not an escape hatch: a recent unanswered
+                // alarm forces the ringing screen before anything else.
+                AlarmCenter.shared.checkMissedRing(container.mainContext)
                 AlarmCenter.shared.rescheduleAll(container.mainContext)
             }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active {
                     AlarmCenter.shared.refreshAuthorization()
+                    AlarmCenter.shared.checkMissedRing(container.mainContext)
                     AlarmCenter.shared.rescheduleAll(container.mainContext)
                 }
             }

@@ -89,8 +89,8 @@ struct AlarmRingingView: View {
             ctx.insert(WakeLog(completed: true, alarmId: a.id))
             if a.repeatMask == 0 { a.enabled = false; a.touch() }  // one-shots disarm
             try? ctx.save()
-            AlarmCenter.shared.rescheduleAll(ctx)
         }
-        AlarmCenter.shared.ringingAlarmID = nil
+        // Stops the siren, cancels the remaining barrage, reschedules the future.
+        AlarmCenter.shared.completeChallenge(ctx)
     }
 }

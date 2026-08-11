@@ -18,6 +18,15 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
     @Published var ringingAlarmID: UUID?
     @Published var authorized = false
 
+    private let tone = AlarmTone()
+    private static let alarmSound = UNNotificationSound(named: UNNotificationSoundName("alarm.caf"))
+
+    /// How many barrage shots follow the head notification, and how far apart.
+    /// Swiping one notification away only silences that shot — the next fires
+    /// seconds later. Only completing the challenge cancels the rest.
+    private static let barrageCount = 23
+    private static let barrageInterval: TimeInterval = 10
+
     // MARK: - Lifecycle / permission
     func activate() {
         UNUserNotificationCenter.current().delegate = self
@@ -68,6 +77,69 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
                 }
             }
         }
+        scheduleBarrage(for: alarms)
+    }
+
+    /// Anti-dismiss barrage: for the next upcoming occurrence, stack follow-up
+    /// notifications every few seconds so dismissing one doesn't stop the alarm.
+    private func scheduleBarrage(for alarms: [AlarmModel]) {
+        let next = alarms.filter(\.enabled)
+            .compactMap { a in Self.nextFireDate(a).map { (a, $0) } }
+            .min { $0.1 < $1.1 }
+        guard let (alarm, fireDate) = next else { return }
+        let center = UNUserNotificationCenter.current()
+        let cal = Calendar.current
+        for i in 1...Self.barrageCount {
+            let shot = fireDate.addingTimeInterval(Double(i) * Self.barrageInterval)
+            let comps = cal.dateComponents([.year, .month, .day, .hour, .minute, .second], from: shot)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
+            center.add(UNNotificationRequest(identifier: "barrage-\(i)",
+                                             content: notificationContent(for: alarm),
+                                             trigger: trigger))
+        }
+    }
+
+    /// The only way to silence a ringing alarm: the challenge was completed.
+    /// Cancels the remaining barrage, clears delivered shots, and rebuilds the
+    /// schedule for future occurrences.
+    func completeChallenge(_ ctx: ModelContext) {
+        tone.stop()
+        ringingAlarmID = nil
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        rescheduleAll(ctx)
+    }
+
+    /// If an enabled alarm fired within the last few minutes and no wake was
+    /// logged, force the ringing screen — opening the app "normally" is not an
+    /// escape hatch.
+    func checkMissedRing(_ ctx: ModelContext, window: TimeInterval = 300) {
+        guard ringingAlarmID == nil else { return }
+        let alarms = (try? ctx.fetch(FetchDescriptor<AlarmModel>())) ?? []
+        for a in alarms {
+            guard let fired = Self.recentOccurrence(a, within: window) else { continue }
+            let logs = (try? ctx.fetch(FetchDescriptor<WakeLog>())) ?? []
+            let done = logs.contains { $0.completed && $0.date >= fired }
+            if !done {
+                ringingAlarmID = a.id
+                tone.start()
+                return
+            }
+        }
+    }
+
+    /// Most recent occurrence of this alarm within `seconds` before now, if any.
+    static func recentOccurrence(_ a: AlarmModel, within seconds: TimeInterval, now: Date = .now) -> Date? {
+        guard a.enabled else { return nil }
+        let cal = Calendar.current
+        var comps = cal.dateComponents([.year, .month, .day], from: now)
+        comps.hour = a.hour; comps.minute = a.minute
+        guard let todayFire = cal.date(from: comps) else { return nil }
+        let elapsed = now.timeIntervalSince(todayFire)
+        guard elapsed >= 0, elapsed <= seconds else { return nil }
+        if a.repeatMask == 0 { return todayFire }
+        let weekday = cal.component(.weekday, from: now)          // 1 = Sunday
+        let bit = weekday == 1 ? 6 : weekday - 2
+        return a.repeatMask & (1 << bit) != 0 ? todayFire : nil
     }
 
     func rescheduleAll(_ ctx: ModelContext) {
@@ -75,23 +147,28 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
         reschedule(all)
     }
 
-    /// Developer helper: fire a one-shot alarm notification in `seconds`.
+    /// Developer helper: fire a test alarm in `seconds`, with a mini-barrage
+    /// so the swipe-away behavior can be exercised too.
     func scheduleTest(alarmID: UUID?, in seconds: TimeInterval = 10) {
         let content = UNMutableNotificationContent()
         content.title = "Test alarm"
         content.body = "Your alarm is ringing"
-        content.sound = .default
+        content.sound = Self.alarmSound
         if let alarmID { content.userInfo = ["alarmId": alarmID.uuidString] }
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
-        UNUserNotificationCenter.current()
-            .add(UNNotificationRequest(identifier: "alarm-test", content: content, trigger: trigger))
+        let center = UNUserNotificationCenter.current()
+        for i in 0..<4 {
+            let delay = seconds + Double(i) * Self.barrageInterval
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: delay, repeats: false)
+            center.add(UNNotificationRequest(identifier: "alarm-test-\(i)",
+                                             content: content, trigger: trigger))
+        }
     }
 
     private func notificationContent(for a: AlarmModel) -> UNMutableNotificationContent {
         let content = UNMutableNotificationContent()
         content.title = a.name
         content.body = "Complete \(a.challengeName) to turn off your alarm"
-        content.sound = .default
+        content.sound = Self.alarmSound
         content.userInfo = ["alarmId": a.id.uuidString]
         return content
     }
@@ -126,6 +203,7 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
         } else {
             ringingAlarmID = UUID()  // unknown alarm — still show the ringing screen
         }
+        tone.start()
     }
 
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
