@@ -95,19 +95,23 @@ struct ChallengeSheet: View {
 
             LazyVGrid(columns: cols, spacing: 15) {
                 ForEach(Mock.challenges) { c in
-                    VStack(spacing: 0) {
-                        Text(c.emoji).font(.system(size: 38)).frame(height: 53)
-                        Text(c.name).jk(18, 800).padding(.top, 12)
-                        Text(c.desc).jk(14).foregroundColor(C.muted)
-                            .multilineTextAlignment(.center).lineSpacing(2).padding(.top, 5)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, 13).padding(.top, 19).padding(.bottom, 17)
-                    .background(C.card)
-                    .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                    .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .stroke(c.sel ? C.ink : .clear, lineWidth: 2))
-                    .cardShadow()
+                    let selected = c.name == app.draftChallenge
+                    Button { app.draftChallenge = c.name } label: {
+                        VStack(spacing: 0) {
+                            Text(c.emoji).font(.system(size: 38)).frame(height: 53)
+                            Text(c.name).jk(18, 800).padding(.top, 12)
+                            Text(c.desc).jk(14).foregroundColor(C.muted)
+                                .multilineTextAlignment(.center).lineSpacing(2).padding(.top, 5)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, 13).padding(.top, 19).padding(.bottom, 17)
+                        .background(C.card)
+                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous)
+                            .stroke(selected ? C.ink : .clear, lineWidth: 2))
+                        .cardShadow()
+                        .contentShape(Rectangle())
+                    }.buttonStyle(.plain)
                 }
             }.padding(.top, 19)
         }

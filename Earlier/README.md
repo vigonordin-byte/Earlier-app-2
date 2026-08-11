@@ -4,6 +4,15 @@ Native **SwiftUI** implementation of the *Earlier* wake-up / alarm app, built fr
 Claude Design imports (`Earlier Onboarding.dc.html` + `Earlier App.dc.html`). The app
 launches into the **onboarding flow** (36 steps), then transitions into the **main app**.
 
+**Challenges dismiss the alarm (Phase 2, done):** the ringing screen now requires the
+alarm's challenge (`Sources/Challenges/`): **Math problem** (generated problem + keypad),
+**Push ups / Squats** (CoreMotion accelerometer rep counter; manual tap-per-rep fallback
+where motion hardware is unavailable, e.g. Simulator), **Bible verse / Devotional**
+(read-aloud with hold-to-confirm), **Item scan / search** (guided get-up-and-find-it with
+hold-to-confirm — camera + Vision verification is a later upgrade). The New-alarm
+Challenge sheet actually selects (stored per alarm). Completing the challenge writes the
+WakeLog and disarms one-shots.
+
 **Alarms fire (Phase 1, done):** enabled alarms are scheduled as local notifications
 (`UserNotifications`, one repeating trigger per active weekday; one-shots disarm after
 firing). The onboarding "Allow" screen requests the real system permission. When an alarm

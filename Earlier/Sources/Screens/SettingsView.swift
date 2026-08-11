@@ -46,7 +46,8 @@ struct SettingsView: View {
             sectionLabel("Developer")
             SettingsCard {
                 Button {
-                    let id = (alarms.first(where: \.enabled) ?? alarms.first)?.id
+                    let candidates = alarms.filter(\.enabled).isEmpty ? alarms : alarms.filter(\.enabled)
+                    let id = candidates.max(by: { $0.updatedAt < $1.updatedAt })?.id
                     AlarmCenter.shared.requestPermission { granted in
                         if granted { AlarmCenter.shared.scheduleTest(alarmID: id) }
                     }

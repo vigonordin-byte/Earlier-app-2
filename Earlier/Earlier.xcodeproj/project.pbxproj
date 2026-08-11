@@ -19,10 +19,14 @@
 		241DC4129E2113450E14366A /* AlarmCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61FE27E6048AD138077B182F /* AlarmCenter.swift */; };
 		2C87077E2C2FCF5E5995C6CA /* ModalKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC2E0E025F8F4CE2BFB7DB0 /* ModalKit.swift */; };
 		2FBD4CB8BBECD5361F6C3936 /* PlusJakartaSans-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C9BEFB0B491B855B9724C11 /* PlusJakartaSans-ExtraBold.ttf */; };
+		3833D62AC427976C3B16C6B8 /* RepsChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE607EAF85880D5EF2408DCE /* RepsChallenge.swift */; };
 		3B8DF5920B7F5C78A55BED97 /* AlarmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C115A7B22EA59575F5C083CA /* AlarmView.swift */; };
 		52C89B13DD7F53230BDA5AEE /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C1FD6A532581113F569AD0B /* AppState.swift */; };
 		559059AADC660DB556937780 /* OnboardingChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046B5A3353ADFF95D8226F39 /* OnboardingChrome.swift */; };
+		66D43A1607F70BF0151FC842 /* MathChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D20BC55494A09CA5A26071 /* MathChallenge.swift */; };
+		683B0AF25E6AA30CA7650583 /* ChallengeKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230B8215B82A3DEA249F0C0E /* ChallengeKit.swift */; };
 		6983BD968B1B9D4FA3A2BFBD /* PaywallScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA12AF213B3D3BCB74E9D47 /* PaywallScreen.swift */; };
+		7875414EA75D1BD01FD5B184 /* ReadAloudChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FD1229BBED703E9F9B242E /* ReadAloudChallenge.swift */; };
 		7A6B6B649551AAB4936B028D /* PlusJakartaSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A628045CD65DFEA96CEAB698 /* PlusJakartaSans-Regular.ttf */; };
 		83A77003590D5E5339B47224 /* WindDownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FF4509A5B891B04187A8E7 /* WindDownView.swift */; };
 		8D9108970C2AFABDAFC82A15 /* OnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E5C0E577FE99968BFA6274 /* OnboardingFlow.swift */; };
@@ -47,6 +51,7 @@
 
 /* Begin PBXFileReference section */
 		02592F4F6108F52D03A1306A /* PersistModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistModels.swift; sourceTree = "<group>"; };
+		03FD1229BBED703E9F9B242E /* ReadAloudChallenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadAloudChallenge.swift; sourceTree = "<group>"; };
 		046B5A3353ADFF95D8226F39 /* OnboardingChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingChrome.swift; sourceTree = "<group>"; };
 		0DC2E0E025F8F4CE2BFB7DB0 /* ModalKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalKit.swift; sourceTree = "<group>"; };
 		15797D2E67B751B314F88D09 /* EditBedtimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBedtimeView.swift; sourceTree = "<group>"; };
@@ -54,6 +59,7 @@
 		1FAF566FB5E7E0294140845A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		2080E7607159AD1C511FD2B2 /* OnboardingScreensA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScreensA.swift; sourceTree = "<group>"; };
 		2260CAED34A5018332A69C28 /* SVG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SVG.swift; sourceTree = "<group>"; };
+		230B8215B82A3DEA249F0C0E /* ChallengeKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeKit.swift; sourceTree = "<group>"; };
 		2F956C12B3B4B1857ABB9F6F /* OnboardingIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingIcons.swift; sourceTree = "<group>"; };
 		330D85C2CFAF8D8449D44CFB /* PlusJakartaSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-Medium.ttf"; sourceTree = "<group>"; };
 		427BFFEBD9203FCEC7F9F5C5 /* BedtimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BedtimeView.swift; sourceTree = "<group>"; };
@@ -73,9 +79,11 @@
 		A8F8E2174F61ABE97F5D032F /* Overlays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Overlays.swift; sourceTree = "<group>"; };
 		BB0EB2DDD918DB5E1401D63B /* AlarmRingingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmRingingView.swift; sourceTree = "<group>"; };
 		BB8F82491B04B9B20618DCCF /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		BE607EAF85880D5EF2408DCE /* RepsChallenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepsChallenge.swift; sourceTree = "<group>"; };
 		C115A7B22EA59575F5C083CA /* AlarmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmView.swift; sourceTree = "<group>"; };
 		C7020382CB5F4D261AC03F1F /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		CE4EB95E47CFA68036C7DCF8 /* Earlier.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Earlier.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0D20BC55494A09CA5A26071 /* MathChallenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathChallenge.swift; sourceTree = "<group>"; };
 		D59BE93B5C884DD76894BAC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		D70554A4F3B146713D753CCB /* PlusJakartaSans-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-SemiBold.ttf"; sourceTree = "<group>"; };
 		D923E0E63DDBFEA319334668 /* EarlierApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarlierApp.swift; sourceTree = "<group>"; };
@@ -87,6 +95,17 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		075695B545569DE93DAE5363 /* Challenges */ = {
+			isa = PBXGroup;
+			children = (
+				230B8215B82A3DEA249F0C0E /* ChallengeKit.swift */,
+				D0D20BC55494A09CA5A26071 /* MathChallenge.swift */,
+				03FD1229BBED703E9F9B242E /* ReadAloudChallenge.swift */,
+				BE607EAF85880D5EF2408DCE /* RepsChallenge.swift */,
+			);
+			path = Challenges;
+			sourceTree = "<group>";
+		};
 		12713C2C427660EF6E9BD981 /* Store */ = {
 			isa = PBXGroup;
 			children = (
@@ -165,6 +184,7 @@
 				2260CAED34A5018332A69C28 /* SVG.swift */,
 				568CC05EDE60B42A007A63A2 /* Theme.swift */,
 				4B7B7268C58D1C4E247F2D24 /* Alarms */,
+				075695B545569DE93DAE5363 /* Challenges */,
 				C090FA4BC480AC90872AB100 /* Onboarding */,
 				6A68872073F3182EC59F49EB /* Screens */,
 				12713C2C427660EF6E9BD981 /* Store */,
@@ -271,6 +291,7 @@
 				3B8DF5920B7F5C78A55BED97 /* AlarmView.swift in Sources */,
 				52C89B13DD7F53230BDA5AEE /* AppState.swift in Sources */,
 				EC9660DB7A62080CE2AD777F /* BedtimeView.swift in Sources */,
+				683B0AF25E6AA30CA7650583 /* ChallengeKit.swift in Sources */,
 				C51AAD45F8BA7E9EEA31F490 /* Components.swift in Sources */,
 				D1D379B869237E012B7F6916 /* DayPicker.swift in Sources */,
 				06759C6BD423EFB4143E8C9A /* EarlierApp.swift in Sources */,
@@ -278,6 +299,7 @@
 				AAE08C2C9D2D968AEE7196AE /* HistoryView.swift in Sources */,
 				AAA399102C2E0E38FD8CD1BD /* HomeView.swift in Sources */,
 				1ADBBD3EC9B346B30D15EAE5 /* Icons.swift in Sources */,
+				66D43A1607F70BF0151FC842 /* MathChallenge.swift in Sources */,
 				2C87077E2C2FCF5E5995C6CA /* ModalKit.swift in Sources */,
 				1A13091BB5A5D0F2ED750C14 /* Models.swift in Sources */,
 				EF0654237EE24E6C798858B9 /* NewAlarmView.swift in Sources */,
@@ -290,6 +312,8 @@
 				0476DF28313AE4903540F910 /* Overlays.swift in Sources */,
 				6983BD968B1B9D4FA3A2BFBD /* PaywallScreen.swift in Sources */,
 				A7E59D88AEBA61C2B471FBB5 /* PersistModels.swift in Sources */,
+				7875414EA75D1BD01FD5B184 /* ReadAloudChallenge.swift in Sources */,
+				3833D62AC427976C3B16C6B8 /* RepsChallenge.swift in Sources */,
 				CD839BE0DD0B96D3E807ED62 /* RootView.swift in Sources */,
 				09A33A118E77C49D233CB600 /* SVG.swift in Sources */,
 				D7C24B56BF7422BA9CE7AD25 /* SettingsView.swift in Sources */,

@@ -26,6 +26,8 @@ final class AppState: ObservableObject {
     @Published var tab: Tab = .home
     @Published var view: Overlay? = nil
     @Published var sub: Sub? = nil
+    /// Challenge picked in the New-alarm flow (the Challenge sub-sheet writes it).
+    @Published var draftChallenge = "Push ups"
 
     // Navigation actions (mirrors renderVals in the design)
     func go(_ t: Tab) { tab = t }
@@ -35,7 +37,10 @@ final class AppState: ObservableObject {
     func openSub(_ s: Sub) { sub = s }
 
     /// "Add alarm" opens the New alarm sheet — or Edit bedtime when on the Bedtime tab.
-    func openNewAlarm() { view = tab == .bedtime ? .editBedtime : .newAlarm }
+    func openNewAlarm() {
+        draftChallenge = "Push ups"
+        view = tab == .bedtime ? .editBedtime : .newAlarm
+    }
 
     /// True when a `view` overlay fully covers the tab bar (everything except History).
     var overlayCoversChrome: Bool {
