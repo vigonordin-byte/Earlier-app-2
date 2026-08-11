@@ -28,6 +28,20 @@ days, History and the streak overlay are computed from `WakeLog` records via
 **Known gap:** the alarm-time wheel in New alarm is still the design's static picker —
 new alarms are created at 6:30 AM. Making it selectable is the next task.
 
+**Bedtime can't be quit on impulse (done):** switching a bedtime off — or turning off app
+blocking — routes through a full-screen **"Wait a minute."** guard
+(`Sources/Screens/BedtimeGuardView.swift`): the streak at stake, a 60-second circular
+countdown, "Keep my bedtime" as the primary action, and the destructive option greyed out
+and non-tappable until the countdown ends. Switching a bedtime back **on** is instant —
+friction only ever guards the protective direction.
+
+**Unblocking is deferred (done):** `Sources/Store/BlockingStore.swift` splits the blocked
+category set into `active` and `pending`. *Tightening* (blocking more) applies right away;
+*loosening* — unblocking a category so you can scroll tonight — is staged and only becomes
+active when the next alarm fires (`applyPendingIfAny()` runs from `beginRinging`). The
+sheet shows the staged selection with a "takes effect at your next alarm — not tonight"
+notice, so the "just unblock it for a second" escape hatch is closed.
+
 **Anti-dismiss enforcement (done):** swiping the alarm notification away does NOT stop
 the alarm — an Alarmy-style **barrage** stacks ~24 follow-up notifications 10s apart
 (each playing the bundled 24s `alarm.caf` tone), so the phone keeps ringing until the

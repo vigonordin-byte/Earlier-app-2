@@ -39,6 +39,8 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
     func beginRinging(_ id: UUID?) {
         if ringingAlarmID == nil { ringingAlarmID = id ?? UUID() }
         if !AlarmKitScheduler.shared.isAuthorized { tone.start() }
+        // Staged unblocking only lands once the alarm has actually gone off.
+        BlockingStore.shared.applyPendingIfAny()
     }
 
     /// Ask for the alarm permission that actually matters (AlarmKit), then the

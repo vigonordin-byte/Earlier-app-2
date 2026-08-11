@@ -32,6 +32,8 @@ final class AppState: ObservableObject {
     /// When set, the Challenge/Sound sheets edit this existing alarm instead of
     /// the new-alarm draft.
     @Published var editingAlarmID: UUID? = nil
+    /// Non-nil while the "Wait a minute." friction screen is up.
+    @Published var guardAction: GuardAction? = nil
 
     /// Open a picker sheet against an existing alarm.
     func editAlarm(_ id: UUID, _ s: Sub) {

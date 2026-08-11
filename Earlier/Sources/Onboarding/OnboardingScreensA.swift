@@ -31,9 +31,10 @@ struct WelcomeScreen: View {
                 Button(action: onSignIn) {
                     (Text("Already have an account? ").foregroundColor(C.inkMuted)
                      + Text("Sign in").foregroundColor(.black).font(JK.font(14, 800)))
-                        .jk(14).frame(maxWidth: .infinity)
+                        .jk(14)
+                        .frame(maxWidth: .infinity, minHeight: 44)   // 44pt tap target
                         .contentShape(Rectangle())
-                }.buttonStyle(.plain).padding(.top, 14)
+                }.buttonStyle(.plain).padding(.top, 4)
             }
             .padding(.horizontal, 22)
             .padding(.top, insets.top + 6)

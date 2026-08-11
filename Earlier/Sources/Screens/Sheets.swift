@@ -166,6 +166,7 @@ struct ChallengeSheet: View {
 // MARK: - App blocking sheet
 struct BlockingSheet: View {
     @EnvironmentObject var app: AppState
+    @StateObject private var blocking = BlockingStore.shared
     var body: some View {
         SheetContainer(bg: C.sheetBg, onScrim: { app.backSub() }) {
             SheetHeader(title: "App blocking", trailingInset: 17) {
@@ -199,19 +200,59 @@ struct BlockingSheet: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading, 29).padding(.top, 22)
 
-            HStack(spacing: 13) {
-                SVGIcon(Icons.grid, fill: C.ink, w: 21).frame(width: 21, height: 21)
-                Text("Blocked apps").jk(18, 800)
-                Spacer()
-                Text("0 apps · 11 categories").jk(17).foregroundColor(C.muted).lineLimit(1)
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: 13) {
+                    SVGIcon(Icons.grid, fill: C.ink, w: 21).frame(width: 21, height: 21)
+                    Text("Blocked apps").jk(18, 800)
+                    Spacer()
+                    Text(blocking.displayedSummary).jk(17).foregroundColor(C.muted).lineLimit(1)
+                }
+                .padding(.horizontal, 19).padding(.top, 15).padding(.bottom, 13)
+
+                HDivider()
+
+                ForEach(Array(BlockCategory.allCases.enumerated()), id: \.element.id) { i, cat in
+                    if i > 0 { HDivider() }
+                    Button { blocking.toggle(cat) } label: {
+                        HStack {
+                            Text(cat.rawValue).jk(17, 500)
+                            Spacer()
+                            let on = blocking.displayed.contains(cat.rawValue)
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 7, style: .continuous)
+                                    .fill(on ? C.ink : .clear).frame(width: 25, height: 25)
+                                RoundedRectangle(cornerRadius: 7, style: .continuous)
+                                    .stroke(on ? C.ink : Color(hex: "D4D1CA"), lineWidth: 1.5)
+                                    .frame(width: 25, height: 25)
+                                if on { SVGIcon(Icons.check, stroke: .white, lineWidth: 3, w: 15) }
+                            }
+                        }
+                        .padding(.horizontal, 19).padding(.vertical, 12)
+                        .contentShape(Rectangle())
+                    }.buttonStyle(.plain)
+                }
             }
-            .padding(.horizontal, 19).padding(.vertical, 15)
             .card(25).padding(.top, 19)
 
-            Text("Turn off app blocking").jk(19, 700).foregroundColor(C.muted)
-                .frame(maxWidth: .infinity).padding(.vertical, 16)
-                .background(RoundedRectangle(cornerRadius: 27, style: .continuous).fill(C.divider2))
-                .padding(.top, 13)
+            if blocking.hasPendingChange {
+                HStack(alignment: .top, spacing: 10) {
+                    Text("🌙").font(.system(size: 15))
+                    Text("Unblocking takes effect at your next alarm — not tonight. Apps stay blocked until you're up.")
+                        .jk(14).foregroundColor(Color(hex: "6E6A62")).lineSpacing(3)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(.horizontal, 17).padding(.vertical, 13)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(C.pill))
+                .padding(.top, 12)
+            }
+
+            Button { app.guardAction = .turnOffBlocking } label: {
+                Text("Turn off app blocking").jk(19, 700).foregroundColor(C.muted)
+                    .frame(maxWidth: .infinity).padding(.vertical, 16)
+                    .background(RoundedRectangle(cornerRadius: 27, style: .continuous).fill(C.divider2))
+                    .contentShape(Rectangle())
+            }.buttonStyle(.plain).padding(.top, 13)
         }
     }
 

@@ -48,12 +48,15 @@ struct BedtimeView: View {
 
     private func bedtimeCard(_ b: BedtimeModel) -> some View {
         VStack(spacing: 0) {
-            HStack {
-                Text(b.name).jk(17, 700)
-                Spacer()
-                SVGIcon(Icons.pencil, stroke: C.muted, lineWidth: 1.7, w: 22).frame(width: 22, height: 22)
-            }
-            .padding(.horizontal, 17).padding(.vertical, 15)
+            Button { app.open(.editBedtime) } label: {
+                HStack {
+                    Text(b.name).jk(17, 700)
+                    Spacer()
+                    SVGIcon(Icons.pencil, stroke: C.muted, lineWidth: 1.7, w: 22).frame(width: 22, height: 22)
+                }
+                .padding(.horizontal, 17).padding(.vertical, 15)
+                .contentShape(Rectangle())
+            }.buttonStyle(.plain)
 
             HDivider()
 
@@ -64,7 +67,13 @@ struct BedtimeView: View {
                 }
                 Spacer()
                 Button {
-                    b.enabled.toggle(); b.touch(); try? ctx.save()
+                    // Switching a bedtime OFF goes through the friction screen;
+                    // switching it back on is instant.
+                    if b.enabled {
+                        app.guardAction = .disableBedtime(b.id)
+                    } else {
+                        b.enabled = true; b.touch(); try? ctx.save()
+                    }
                 } label: {
                     TogglePill(on: b.enabled).padding(.bottom, 5)
                 }.buttonStyle(.plain)

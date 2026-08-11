@@ -51,11 +51,19 @@ struct RootView: View {
 
                 // Sub-sheets (time / sound / challenge / blocking)
                 subSheets
+
+                // Friction screen — sits above everything.
+                if let g = app.guardAction {
+                    BedtimeGuardView(action: g)
+                        .transition(.opacity)
+                        .zIndex(20)
+                }
             }
             .environment(\.safeInsets, geo.safeAreaInsets)
             .environmentObject(app)
             .preferredColorScheme(app.view == .streak ? .dark : .light)
             .animation(.easeOut(duration: 0.22), value: app.view != nil)
+            .animation(.easeOut(duration: 0.25), value: app.guardAction)
             .animation(.easeOut(duration: 0.2), value: app.sub != nil)
             .animation(.easeInOut(duration: 0.18), value: app.tab)
         }

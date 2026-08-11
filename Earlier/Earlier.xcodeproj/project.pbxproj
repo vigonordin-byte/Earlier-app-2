@@ -14,6 +14,7 @@
 		0B62C2E9BB68AD788F1DBB5D /* PlusJakartaSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 330D85C2CFAF8D8449D44CFB /* PlusJakartaSans-Medium.ttf */; };
 		129FB989703C12654E925881 /* AlarmRingingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0EB2DDD918DB5E1401D63B /* AlarmRingingView.swift */; };
 		136036A84D2BDFC3C2770920 /* EditBedtimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15797D2E67B751B314F88D09 /* EditBedtimeView.swift */; };
+		18ECE67626B632CF9820B25F /* BlockingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 553150B8017171B34E53E7EC /* BlockingStore.swift */; };
 		1A13091BB5A5D0F2ED750C14 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB8F82491B04B9B20618DCCF /* Models.swift */; };
 		1ADBBD3EC9B346B30D15EAE5 /* Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B55A8E0079701CAB3CF502 /* Icons.swift */; };
 		1CE0ADB54450210E7E7BE3C9 /* OnboardingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81973DE64599DF9344A7224E /* OnboardingState.swift */; };
@@ -28,6 +29,7 @@
 		683B0AF25E6AA30CA7650583 /* ChallengeKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230B8215B82A3DEA249F0C0E /* ChallengeKit.swift */; };
 		6983BD968B1B9D4FA3A2BFBD /* PaywallScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA12AF213B3D3BCB74E9D47 /* PaywallScreen.swift */; };
 		6B5458279D30D0B5D36318C4 /* Stats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7601B661761A27F687B740E3 /* Stats.swift */; };
+		704981B329895835B15E5C33 /* BedtimeGuardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509065AE6DB8097F658DB21 /* BedtimeGuardView.swift */; };
 		7875414EA75D1BD01FD5B184 /* ReadAloudChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FD1229BBED703E9F9B242E /* ReadAloudChallenge.swift */; };
 		7A6B6B649551AAB4936B028D /* PlusJakartaSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A628045CD65DFEA96CEAB698 /* PlusJakartaSans-Regular.ttf */; };
 		83A77003590D5E5339B47224 /* WindDownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FF4509A5B891B04187A8E7 /* WindDownView.swift */; };
@@ -72,6 +74,7 @@
 		4BA12AF213B3D3BCB74E9D47 /* PaywallScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallScreen.swift; sourceTree = "<group>"; };
 		4F51BCCE23FC80668FBABE0D /* PlusJakartaSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-Bold.ttf"; sourceTree = "<group>"; };
 		552170F6D163029FDBBD7FA6 /* OnboardingScreensB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScreensB.swift; sourceTree = "<group>"; };
+		553150B8017171B34E53E7EC /* BlockingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockingStore.swift; sourceTree = "<group>"; };
 		568CC05EDE60B42A007A63A2 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		61FE27E6048AD138077B182F /* AlarmCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmCenter.swift; sourceTree = "<group>"; };
 		6C0ED96E7A00DCFD808321E8 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
@@ -85,6 +88,7 @@
 		9C1FD6A532581113F569AD0B /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		A628045CD65DFEA96CEAB698 /* PlusJakartaSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-Regular.ttf"; sourceTree = "<group>"; };
 		A8F8E2174F61ABE97F5D032F /* Overlays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Overlays.swift; sourceTree = "<group>"; };
+		B509065AE6DB8097F658DB21 /* BedtimeGuardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BedtimeGuardView.swift; sourceTree = "<group>"; };
 		BB0EB2DDD918DB5E1401D63B /* AlarmRingingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmRingingView.swift; sourceTree = "<group>"; };
 		BB8F82491B04B9B20618DCCF /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		BE607EAF85880D5EF2408DCE /* RepsChallenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepsChallenge.swift; sourceTree = "<group>"; };
@@ -117,6 +121,7 @@
 		12713C2C427660EF6E9BD981 /* Store */ = {
 			isa = PBXGroup;
 			children = (
+				553150B8017171B34E53E7EC /* BlockingStore.swift */,
 				FA6CD74D86361249D750B403 /* DayPicker.swift */,
 				02592F4F6108F52D03A1306A /* PersistModels.swift */,
 				7601B661761A27F687B740E3 /* Stats.swift */,
@@ -160,6 +165,7 @@
 			isa = PBXGroup;
 			children = (
 				C115A7B22EA59575F5C083CA /* AlarmView.swift */,
+				B509065AE6DB8097F658DB21 /* BedtimeGuardView.swift */,
 				427BFFEBD9203FCEC7F9F5C5 /* BedtimeView.swift */,
 				15797D2E67B751B314F88D09 /* EditBedtimeView.swift */,
 				C7020382CB5F4D261AC03F1F /* HistoryView.swift */,
@@ -305,7 +311,9 @@
 				AC36688E86A0FA22671589AB /* AlarmTone.swift in Sources */,
 				3B8DF5920B7F5C78A55BED97 /* AlarmView.swift in Sources */,
 				52C89B13DD7F53230BDA5AEE /* AppState.swift in Sources */,
+				704981B329895835B15E5C33 /* BedtimeGuardView.swift in Sources */,
 				EC9660DB7A62080CE2AD777F /* BedtimeView.swift in Sources */,
+				18ECE67626B632CF9820B25F /* BlockingStore.swift in Sources */,
 				683B0AF25E6AA30CA7650583 /* ChallengeKit.swift in Sources */,
 				C51AAD45F8BA7E9EEA31F490 /* Components.swift in Sources */,
 				D1D379B869237E012B7F6916 /* DayPicker.swift in Sources */,
