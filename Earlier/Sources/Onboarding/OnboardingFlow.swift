@@ -40,7 +40,7 @@ struct OnboardingFlow: View {
     @ViewBuilder private var screen: some View {
         switch state.current {
         case .welcome:
-            WelcomeScreen()
+            WelcomeScreen(onSignIn: onFinish)
         case let .question(title, options):
             QuestionScreen(title: title, options: options)
         case .sources:

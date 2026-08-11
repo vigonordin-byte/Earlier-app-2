@@ -4,6 +4,30 @@ Native **SwiftUI** implementation of the *Earlier* wake-up / alarm app, built fr
 Claude Design imports (`Earlier Onboarding.dc.html` + `Earlier App.dc.html`). The app
 launches into the **onboarding flow** (36 steps), then transitions into the **main app**.
 
+**Native alarms via AlarmKit (done):** alarms are scheduled with Apple's **AlarmKit**
+(`Sources/Alarms/AlarmKitScheduler.swift`) — real system alarms that ring through silent
+mode and Focus with Apple's own presentation, the same mechanism the built-in Clock app
+uses. Requires only `NSAlarmKitUsageDescription` (no paid entitlement). `AlarmModel.id`
+doubles as the AlarmKit alarm id. The alert's secondary button runs `OpenChallengeIntent`,
+opening Earlier straight into the challenge; `alarmUpdates` is observed so an `.alerting`
+alarm raises the challenge UI. Completing the challenge calls `AlarmManager.stop(id:)`.
+Local notifications remain as an automatic **fallback** only when AlarmKit is not
+authorized — the two never run at once.
+
+> Note: `startWatching()` is gated on `isAuthorized`; touching AlarmKit while the
+> permission is undetermined re-triggers the system prompt in a loop.
+
+**Home is live (done):** the next-alarm card computes the real next occurrence (with a
+"Create an alarm" empty state), and its Challenge and Sound tiles open the pickers for
+that alarm and save the change. Get started reflects real state (alarm exists / reason
+written / signature drawn) with a real progress bar; Wake-up reason is a working
+TextEditor and Sign your commitment is a real drawing pad, both persisted. Streak, Past 7
+days, History and the streak overlay are computed from `WakeLog` records via
+`Sources/Store/Stats.swift`.
+
+**Known gap:** the alarm-time wheel in New alarm is still the design's static picker —
+new alarms are created at 6:30 AM. Making it selectable is the next task.
+
 **Anti-dismiss enforcement (done):** swiping the alarm notification away does NOT stop
 the alarm — an Alarmy-style **barrage** stacks ~24 follow-up notifications 10s apart
 (each playing the bundled 24s `alarm.caf` tone), so the phone keeps ringing until the

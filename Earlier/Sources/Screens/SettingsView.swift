@@ -48,11 +48,18 @@ struct SettingsView: View {
                 Button {
                     let candidates = alarms.filter(\.enabled).isEmpty ? alarms : alarms.filter(\.enabled)
                     let id = candidates.max(by: { $0.updatedAt < $1.updatedAt })?.id
-                    AlarmCenter.shared.requestPermission { granted in
-                        if granted { AlarmCenter.shared.scheduleTest(alarmID: id) }
+                    Task {
+                        _ = await AlarmCenter.shared.requestAllPermissions()
+                        AlarmCenter.shared.scheduleTest(alarmID: id)
                     }
                 } label: {
                     SettingsRow(icon: Icons.clock, title: "Test alarm (10s)")
+                        .contentShape(Rectangle())
+                }.buttonStyle(.plain)
+                HDivider()
+                Button { scheduleRealAlarmSoon() } label: {
+                    SettingsRow(icon: Icons.clock, title: "Real alarm in 1 min",
+                                trailing: AlarmKitScheduler.shared.isAuthorized ? "AlarmKit" : "fallback")
                         .contentShape(Rectangle())
                 }.buttonStyle(.plain)
                 HDivider()
@@ -64,6 +71,23 @@ struct SettingsView: View {
 
             Text("Version 1.0.0").jk(16).foregroundColor(C.muted2)
                 .frame(maxWidth: .infinity).padding(.top, 22)
+        }
+    }
+
+    /// Dev helper: a genuine one-shot alarm a minute from now, so the real
+    /// AlarmKit presentation can be exercised end to end.
+    private func scheduleRealAlarmSoon() {
+        Task {
+            _ = await AlarmCenter.shared.requestAllPermissions()
+            let fire = Date().addingTimeInterval(60)
+            let c = Calendar.current.dateComponents([.hour, .minute], from: fire)
+            let alarm = AlarmModel(name: "Test wake-up",
+                                   hour: c.hour ?? 0, minute: c.minute ?? 0,
+                                   repeatMask: 0, soundName: "Default",
+                                   challengeName: "Math problem", enabled: true)
+            ctx.insert(alarm)
+            try? ctx.save()
+            AlarmCenter.shared.rescheduleAll(ctx)
         }
     }
 

@@ -1,4 +1,38 @@
 import SwiftUI
+import SwiftData
+
+/// Shared plumbing for the Challenge/Sound pickers: they either edit an
+/// existing alarm (when `app.editingAlarmID` is set) or the new-alarm draft.
+@MainActor
+private struct PickerTarget {
+    let ctx: ModelContext
+    let app: AppState
+    let alarms: [AlarmModel]
+
+    var editing: AlarmModel? {
+        guard let id = app.editingAlarmID else { return nil }
+        return alarms.first { $0.id == id }
+    }
+    var currentChallenge: String { editing?.challengeName ?? app.draftChallenge }
+    var currentSound: String { editing?.soundName ?? app.draftSound }
+
+    func setChallenge(_ name: String) {
+        if let a = editing {
+            a.challengeName = name; a.touch(); try? ctx.save()
+            AlarmCenter.shared.rescheduleAll(ctx)
+        } else {
+            app.draftChallenge = name
+        }
+    }
+    func setSound(_ name: String) {
+        if let a = editing {
+            a.soundName = name; a.touch(); try? ctx.save()
+            AlarmCenter.shared.rescheduleAll(ctx)
+        } else {
+            app.draftSound = name
+        }
+    }
+}
 
 // MARK: - Time picker sheet
 struct TimeSheet: View {
@@ -43,6 +77,10 @@ struct TimeSheet: View {
 // MARK: - Sound picker sheet
 struct SoundSheet: View {
     @EnvironmentObject var app: AppState
+    @Environment(\.modelContext) private var ctx
+    @Query private var alarms: [AlarmModel]
+    private var target: PickerTarget { PickerTarget(ctx: ctx, app: app, alarms: alarms) }
+
     var body: some View {
         SheetContainer(bg: C.sheetBg, onScrim: { app.backSub() }) {
             SheetHeader(title: "Choose a sound", trailingInset: 17) {
@@ -54,25 +92,29 @@ struct SoundSheet: View {
 
             VStack(spacing: 12) {
                 ForEach(Mock.sounds) { s in
-                    HStack(spacing: 13) {
-                        SVGIcon(s.icon, stroke: s.sel ? .white : C.muted2, lineWidth: 1.7, w: 20)
-                            .frame(width: 39, height: 39)
-                            .background(Circle().fill(s.sel ? C.ink : C.chip))
-                        Text(s.name).jk(18, 800)
-                        Spacer()
-                        if s.sel {
-                            ZStack {
-                                Circle().fill(C.ink).frame(width: 29, height: 29)
-                                SVGIcon(Icons.check, stroke: .white, lineWidth: 3, w: 14)
+                    let selected = s.name == target.currentSound
+                    Button { target.setSound(s.name) } label: {
+                        HStack(spacing: 13) {
+                            SVGIcon(s.icon, stroke: selected ? .white : C.muted2, lineWidth: 1.7, w: 20)
+                                .frame(width: 39, height: 39)
+                                .background(Circle().fill(selected ? C.ink : C.chip))
+                            Text(s.name).jk(18, 800)
+                            Spacer()
+                            if selected {
+                                ZStack {
+                                    Circle().fill(C.ink).frame(width: 29, height: 29)
+                                    SVGIcon(Icons.check, stroke: .white, lineWidth: 3, w: 14)
+                                }
                             }
                         }
-                    }
-                    .padding(.horizontal, 15).padding(.vertical, 12)
-                    .background(C.card)
-                    .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-                    .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        .stroke(s.sel ? C.ink : .clear, lineWidth: 2))
-                    .cardShadow()
+                        .padding(.horizontal, 15).padding(.vertical, 12)
+                        .background(C.card)
+                        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous)
+                            .stroke(selected ? C.ink : .clear, lineWidth: 2))
+                        .cardShadow()
+                        .contentShape(Rectangle())
+                    }.buttonStyle(.plain)
                 }
             }.padding(.top, 19)
         }
@@ -82,6 +124,9 @@ struct SoundSheet: View {
 // MARK: - Challenge picker sheet
 struct ChallengeSheet: View {
     @EnvironmentObject var app: AppState
+    @Environment(\.modelContext) private var ctx
+    @Query private var alarms: [AlarmModel]
+    private var target: PickerTarget { PickerTarget(ctx: ctx, app: app, alarms: alarms) }
     private let cols = [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)]
 
     var body: some View {
@@ -95,8 +140,8 @@ struct ChallengeSheet: View {
 
             LazyVGrid(columns: cols, spacing: 15) {
                 ForEach(Mock.challenges) { c in
-                    let selected = c.name == app.draftChallenge
-                    Button { app.draftChallenge = c.name } label: {
+                    let selected = c.name == target.currentChallenge
+                    Button { target.setChallenge(c.name) } label: {
                         VStack(spacing: 0) {
                             Text(c.emoji).font(.system(size: 38)).frame(height: 53)
                             Text(c.name).jk(18, 800).padding(.top, 12)

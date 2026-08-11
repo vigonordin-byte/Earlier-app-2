@@ -258,8 +258,11 @@ struct NotifyScreen: View {
                     HStack(spacing: 0) {
                         Text("Don't Allow").jk(17).frame(maxWidth: .infinity).padding(.vertical, 14)
                         Button {
-                            // Real system notification permission, then advance.
-                            AlarmCenter.shared.requestPermission { _ in s.next() }
+                            // Real system alarm (AlarmKit) + notification permission.
+                            Task {
+                                _ = await AlarmCenter.shared.requestAllPermissions()
+                                s.next()
+                            }
                         } label: {
                             Text("Allow").jk(17).foregroundColor(.white)
                                 .frame(maxWidth: .infinity).padding(.vertical, 14)

@@ -26,6 +26,7 @@ targets:
       properties:
         CFBundleDisplayName: Earlier
         CFBundleShortVersionString: "1.0.0"
+        NSAlarmKitUsageDescription: Earlier schedules your wake-up alarms so they ring reliably, even in silent mode or Focus.
         UILaunchScreen:
           UIColorName: LaunchBackground
         UISupportedInterfaceOrientations:

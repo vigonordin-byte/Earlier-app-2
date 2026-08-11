@@ -31,6 +31,24 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
     func activate() {
         UNUserNotificationCenter.current().delegate = self
         refreshAuthorization()
+        AlarmKitScheduler.shared.startWatching()
+    }
+
+    /// Raise the full-screen challenge. When AlarmKit is driving the alarm the
+    /// system is already playing the sound, so we don't layer our own tone on top.
+    func beginRinging(_ id: UUID?) {
+        if ringingAlarmID == nil { ringingAlarmID = id ?? UUID() }
+        if !AlarmKitScheduler.shared.isAuthorized { tone.start() }
+    }
+
+    /// Ask for the alarm permission that actually matters (AlarmKit), then the
+    /// notification permission used as a fallback.
+    func requestAllPermissions() async -> Bool {
+        let alarmOK = await AlarmKitScheduler.shared.requestAuthorization()
+        await withCheckedContinuation { (c: CheckedContinuation<Void, Never>) in
+            requestPermission { _ in c.resume() }
+        }
+        return alarmOK
     }
 
     func refreshAuthorization() {
@@ -104,6 +122,7 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
     /// schedule for future occurrences.
     func completeChallenge(_ ctx: ModelContext) {
         tone.stop()
+        if let id = ringingAlarmID { AlarmKitScheduler.shared.stop(id) }
         ringingAlarmID = nil
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
         rescheduleAll(ctx)
@@ -120,8 +139,7 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
             let logs = (try? ctx.fetch(FetchDescriptor<WakeLog>())) ?? []
             let done = logs.contains { $0.completed && $0.date >= fired }
             if !done {
-                ringingAlarmID = a.id
-                tone.start()
+                beginRinging(a.id)
                 return
             }
         }
@@ -142,9 +160,18 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
         return a.repeatMask & (1 << bit) != 0 ? todayFire : nil
     }
 
+    /// Single entry point. AlarmKit owns the ringing when it's authorized —
+    /// those are real system alarms that break through silent mode and Focus.
+    /// Local notifications are only a fallback for when it isn't.
     func rescheduleAll(_ ctx: ModelContext) {
         let all = (try? ctx.fetch(FetchDescriptor<AlarmModel>())) ?? []
-        reschedule(all)
+        if AlarmKitScheduler.shared.isAuthorized {
+            UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+            Task { await AlarmKitScheduler.shared.sync(all) }
+        } else {
+            AlarmKitScheduler.shared.cancelAll()
+            reschedule(all)
+        }
     }
 
     /// Developer helper: fire a test alarm in `seconds`, with a mini-barrage
@@ -198,12 +225,8 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
 
     // MARK: - UNUserNotificationCenterDelegate
     private func openRinging(from userInfo: [AnyHashable: Any]) {
-        if let s = userInfo["alarmId"] as? String, let id = UUID(uuidString: s) {
-            ringingAlarmID = id
-        } else {
-            ringingAlarmID = UUID()  // unknown alarm — still show the ringing screen
-        }
-        tone.start()
+        let id = (userInfo["alarmId"] as? String).flatMap(UUID.init(uuidString:))
+        beginRinging(id)
     }
 
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,

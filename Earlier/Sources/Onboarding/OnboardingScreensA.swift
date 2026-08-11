@@ -4,6 +4,8 @@ import SwiftUI
 struct WelcomeScreen: View {
     @EnvironmentObject var s: OnboardingState
     @Environment(\.safeInsets) private var insets
+    /// Returning users skip the questionnaire.
+    var onSignIn: () -> Void = {}
     var body: some View {
         ZStack {
             C.phoneBg.ignoresSafeArea()
@@ -26,9 +28,12 @@ struct WelcomeScreen: View {
                         .background(RoundedRectangle(cornerRadius: 27, style: .continuous).fill(C.ink))
                         .contentShape(Rectangle())
                 }.buttonStyle(.plain)
-                (Text("Already have an account? ").foregroundColor(C.inkMuted)
-                 + Text("Sign in").foregroundColor(C.inkMuted).font(JK.font(14, 800)))
-                    .jk(14).frame(maxWidth: .infinity).padding(.top, 14)
+                Button(action: onSignIn) {
+                    (Text("Already have an account? ").foregroundColor(C.inkMuted)
+                     + Text("Sign in").foregroundColor(.black).font(JK.font(14, 800)))
+                        .jk(14).frame(maxWidth: .infinity)
+                        .contentShape(Rectangle())
+                }.buttonStyle(.plain).padding(.top, 14)
             }
             .padding(.horizontal, 22)
             .padding(.top, insets.top + 6)

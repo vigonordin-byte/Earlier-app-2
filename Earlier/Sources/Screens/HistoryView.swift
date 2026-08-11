@@ -1,8 +1,11 @@
 import SwiftUI
+import SwiftData
 
 struct HistoryView: View {
     @EnvironmentObject var app: AppState
     @Environment(\.safeInsets) private var insets
+    @Query private var logs: [WakeLog]
+    @Query private var bedtimes: [BedtimeModel]
 
     var body: some View {
         ZStack {
@@ -34,12 +37,12 @@ struct HistoryView: View {
     private var streakCard: some View {
         HStack(alignment: .bottom) {
             VStack(alignment: .leading, spacing: 0) {
-                Text("1").jk(46, 800).foregroundColor(C.orangeStreak)
+                Text("\(Stats.streak(logs))").jk(46, 800).foregroundColor(C.orangeStreak)
                 Text("day streak").jk(16).foregroundColor(C.muted).padding(.top, 7)
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 0) {
-                Text("21").jk(32, 800)
+                Text("\(Stats.bestStreak(logs))").jk(32, 800)
                 Text("best ever").jk(16).foregroundColor(C.muted).padding(.top, 5)
             }
         }
@@ -52,7 +55,7 @@ struct HistoryView: View {
             Text("Wake-ups this week").jk(20, 800, tracking: -0.5)
             Spacer(minLength: 20)
             HStack(alignment: .bottom, spacing: 7) {
-                ForEach(Mock.week) { d in
+                ForEach(Stats.lastSevenDays(logs)) { d in
                     VStack(spacing: 8) {
                         RoundedRectangle(cornerRadius: 5).fill(d.color).frame(height: 9)
                         Text(d.label).jk(13, 500).foregroundColor(C.muted2)
@@ -68,8 +71,9 @@ struct HistoryView: View {
 
     private var averages: some View {
         HStack(spacing: 13) {
-            statTile("7:17", "Average rise")
-            statTile("10:30", "Average bedtime")
+            statTile(Stats.averageRise(logs) ?? "—", "Average rise")
+            statTile(bedtimes.first(where: \.enabled)?.timeLabel
+                     ?? bedtimes.first?.timeLabel ?? "—", "Average bedtime")
         }
     }
 
@@ -87,7 +91,7 @@ struct HistoryView: View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Last 4 weeks").jk(20, 800, tracking: -0.5)
             VStack(spacing: 15) {
-                ForEach(Mock.weeks) { w in
+                ForEach(Stats.lastFourWeeks(logs)) { w in
                     HStack(spacing: 12) {
                         Text(w.label).jk(15).foregroundColor(C.muted)
                             .lineLimit(1).fixedSize()

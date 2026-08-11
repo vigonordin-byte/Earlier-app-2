@@ -81,7 +81,7 @@ struct NewAlarmView: View {
             name: name.trimmingCharacters(in: .whitespaces).isEmpty ? "Alarm" : name,
             hour: 6, minute: 30,
             repeatMask: Weekdays.maskFromPicker(days),
-            soundName: "Default", challengeName: app.draftChallenge, enabled: true)
+            soundName: app.draftSound, challengeName: app.draftChallenge, enabled: true)
         ctx.insert(alarm)
         try? ctx.save()
         AlarmCenter.shared.rescheduleAll(ctx)
@@ -92,7 +92,7 @@ struct NewAlarmView: View {
         VStack(spacing: 0) {
             Button { app.openSub(.sound) } label: {
                 optionRow(leading: AnyView(SVGIcon(Icons.speakerSmall, stroke: C.ink, lineWidth: 1.8, w: 21).frame(width: 21, height: 21)),
-                          title: "Sound", value: "Default")
+                          title: "Sound", value: app.draftSound)
             }.buttonStyle(.plain)
             HDivider()
             Button { app.openSub(.challenge) } label: {
