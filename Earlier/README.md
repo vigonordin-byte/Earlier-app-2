@@ -4,6 +4,21 @@ Native **SwiftUI** implementation of the *Earlier* wake-up / alarm app, built fr
 Claude Design imports (`Earlier Onboarding.dc.html` + `Earlier App.dc.html`). The app
 launches into the **onboarding flow** (36 steps), then transitions into the **main app**.
 
+**App icon (done):** `Resources/Assets.xcassets/AppIcon.appiconset` — a cream sunrise on
+black, drawn to stay legible at home-screen size. Opaque RGB, as the App Store requires.
+
+**Nothing claims to be what it isn't (done):**
+- The **paywall** is non-transactional: no trial countdown, no billing dates, no prices.
+  Plans show as a dimmed "Coming soon" preview, the CTA is "Start using Earlier", and
+  "Restore" is gone (there are no purchases to restore). Settings says *"Free while in
+  beta"* instead of unconditionally calling everyone Premium.
+- The onboarding **loading screen** used to animate a hardcoded 28% and claim it was
+  "calibrating motion detection". It now performs the real setup — writing the alarm from
+  the user's answers and arming the schedule — and reports actual progress against it.
+- **Onboarding time pickers are real** (`DatePicker` wheels). The time chosen on "Now set
+  the alarm" is the time the first alarm is created with, and the commitment, statement and
+  summary screens all quote that time back instead of a hardcoded 6:30 AM.
+
 **Editing is real (done):** alarms and bedtimes are created *and edited* through a shared
 draft (`AlarmDraft` in `AppState`). The alarm-time wheel is a native `DatePicker` — real
 scrolling, snapping, haptics, and 12h/24h + locale handled by the system. The pencil on an

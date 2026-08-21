@@ -290,7 +290,8 @@ struct SignScreen: View {
         OBScaffold(content: {
             OBTitle(text: "Sign your commitment")
             (Text("Promise yourself that you will wake up tomorrow at ").foregroundColor(C.inkMuted)
-             + Text("6:30 AM").foregroundColor(.black).font(JK.font(17, 800))
+             + Text(timeString(hour: s.committedTime.hour, minute: s.committedTime.minute))
+                 .foregroundColor(.black).font(JK.font(17, 800))
              + Text(", when your alarm goes off.").foregroundColor(C.inkMuted))
                 .jk(17).lineSpacing(4).fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -313,9 +314,17 @@ struct SignScreen: View {
 }
 
 // MARK: - Loading
+/// Does the actual setup work (writing the alarm, arming the schedule) and
+/// reports genuine progress — rather than animating a number at nothing.
 struct LoadingScreen: View {
     @EnvironmentObject var s: OnboardingState
     @Environment(\.safeInsets) private var insets
+    @Environment(\.modelContext) private var ctx
+
+    @State private var progress: Double = 0
+    @State private var stepLabel = "Saving your answers"
+    @State private var doneSteps: [String] = []
+
     var body: some View {
         ZStack {
             C.phoneBg.ignoresSafeArea()
@@ -323,31 +332,62 @@ struct LoadingScreen: View {
                 Text("We're setting everything up for you").jk(31, 800, tracking: -1)
                     .multilineTextAlignment(.center).lineSpacing(3)
                     .fixedSize(horizontal: false, vertical: true).frame(maxWidth: .infinity)
-                Text("28%").jk(40, 800, tracking: -1.4).frame(maxWidth: .infinity).padding(.top, 31)
-                ZStack(alignment: .leading) {
-                    Capsule().fill(Color(hex: "DCD9D2")).frame(height: 7)
-                    GeometryReader { g in
-                        Capsule().fill(C.ink).frame(width: g.size.width * 0.28, height: 7)
-                    }.frame(height: 7)
-                }.padding(.top, 14)
-                Text("Calibrating motion detection").jk(17).foregroundColor(C.muted)
-                    .frame(maxWidth: .infinity).padding(.top, 13)
-                HStack(spacing: 13) {
-                    SVGIcon(Icons.check, stroke: .black, lineWidth: 2.2, w: 18)
-                    Text("Eliminate Snoozing").jk(18, 500)
+
+                Text("\(Int(progress * 100))%").jk(40, 800, tracking: -1.4)
+                    .contentTransition(.numericText())
+                    .frame(maxWidth: .infinity).padding(.top, 31)
+
+                GeometryReader { g in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(Color(hex: "DCD9D2"))
+                        Capsule().fill(C.ink).frame(width: g.size.width * progress)
+                    }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 20).padding(.top, 32)
+                .frame(height: 7).padding(.top, 14)
+
+                Text(stepLabel).jk(17).foregroundColor(C.muted)
+                    .frame(maxWidth: .infinity).padding(.top, 13)
+
+                VStack(alignment: .leading, spacing: 12) {
+                    ForEach(doneSteps, id: \.self) { done in
+                        HStack(spacing: 13) {
+                            SVGIcon(Icons.check, stroke: .black, lineWidth: 2.2, w: 18)
+                            Text(done).jk(18, 500)
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, 20).padding(.top, 32)
             }
             .padding(.horizontal, 22)
         }
-        .contentShape(Rectangle())
-        .onTapGesture { s.next() }
-        .onAppear {
-            let captured = s.step
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.9) {
-                if s.step == captured { s.next() }
-            }
-        }
+        .animation(.easeOut(duration: 0.3), value: progress)
+        .task { await runSetup() }
+    }
+
+    private func runSetup() async {
+        // 1. Persist the onboarding answers as a real alarm.
+        withAnimation { progress = 0.15 }
+        try? await Task.sleep(for: .milliseconds(450))
+        s.applySetup(ctx)
+        doneSteps.append("Wake-up time saved")
+        stepLabel = "Arming your alarm"
+        withAnimation { progress = 0.55 }
+
+        // 2. Actually schedule it.
+        try? await Task.sleep(for: .milliseconds(450))
+        AlarmCenter.shared.rescheduleAll(ctx)
+        doneSteps.append("Alarm scheduled")
+        stepLabel = "Almost there"
+        withAnimation { progress = 0.85 }
+
+        try? await Task.sleep(for: .milliseconds(400))
+        doneSteps.append("Snoozing disabled")
+        stepLabel = "Ready"
+        withAnimation { progress = 1.0 }
+
+        try? await Task.sleep(for: .milliseconds(500))
+        s.next()
     }
 }
 
@@ -365,7 +405,8 @@ struct SummaryScreen: View {
                 }.frame(maxWidth: .infinity)
                 Text("Tomorrow, you will wake up at").jk(19).foregroundColor(C.inkMuted)
                     .frame(maxWidth: .infinity).padding(.top, 20)
-                Text("6:30 AM").jk(47, 800, tracking: -2).frame(maxWidth: .infinity).padding(.top, 9)
+                Text(timeString(hour: s.committedTime.hour, minute: s.committedTime.minute))
+                    .jk(47, 800, tracking: -2).frame(maxWidth: .infinity).padding(.top, 9)
                 HStack(alignment: .top, spacing: 11) {
                     flowStep(OB.alarmClock, 22, 1.8, "Alarm rings")
                     Text("→").jk(16).foregroundColor(C.muted).padding(.top, 13)

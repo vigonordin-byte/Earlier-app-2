@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 enum StepKind {
     case welcome
@@ -32,6 +33,17 @@ final class OnboardingState: ObservableObject {
     @Published var answers: [Int: Int] = [1: 0, 2: 0, 6: 1, 11: 0, 18: 0]
     @Published var mission = 2
     @Published var days = [true, true, true, true, true, false, false]
+    /// Times chosen on the picker steps, keyed by step index.
+    @Published var pickedTimes: [Int: DateComponents] = [:]
+
+    /// The alarm the user actually committed to (step 24), falling back to
+    /// their stated ideal wake time, then 6:30.
+    var committedTime: (hour: Int, minute: Int) {
+        for step in [24, 16] {
+            if let c = pickedTimes[step], let h = c.hour, let m = c.minute { return (h, m) }
+        }
+        return (6, 30)
+    }
 
     let steps: [StepKind] = [
         .welcome,                                                                                   // 0
@@ -104,6 +116,28 @@ final class OnboardingState: ObservableObject {
     var answeredCurrent: Bool { answers[step] != nil }
 
     func next() { step = min(step + 1, steps.count - 1) }
+
+    /// The real setup work, run while the "setting everything up" screen is
+    /// on screen — so that progress bar reflects something actually happening.
+    @MainActor
+    func applySetup(_ ctx: ModelContext) {
+        var mask = 0
+        for (i, on) in days.enumerated() where on { mask |= (1 << i) }   // days is Mon-first
+        let missionName = onboardingMissions.indices.contains(mission)
+            ? onboardingMissions[mission].name : "Push ups"
+        let t = committedTime
+
+        let existing = try? ctx.fetch(FetchDescriptor<AlarmModel>())
+        if let alarm = existing?.first {
+            alarm.hour = t.hour; alarm.minute = t.minute; alarm.repeatMask = mask
+            alarm.challengeName = missionName; alarm.enabled = true; alarm.touch()
+        } else {
+            ctx.insert(AlarmModel(name: "First alarm", hour: t.hour, minute: t.minute,
+                                  repeatMask: mask, soundName: "Birds",
+                                  challengeName: missionName, enabled: true))
+        }
+        try? ctx.save()
+    }
     func prev() { step = max(step - 1, 0) }
     func pick(_ i: Int) { answers[step] = i }
     func toggleDay(_ i: Int) { days[i].toggle() }

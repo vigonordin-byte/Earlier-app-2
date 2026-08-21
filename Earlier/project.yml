@@ -42,4 +42,5 @@ targets:
       base:
         PRODUCT_NAME: Earlier
         PRODUCT_BUNDLE_IDENTIFIER: com.earlier.app
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         SWIFT_VERSION: "5.0"

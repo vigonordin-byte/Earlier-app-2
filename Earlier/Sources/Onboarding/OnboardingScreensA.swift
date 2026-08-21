@@ -302,20 +302,53 @@ struct PickerScreen: View {
     let hour: Int
     let minute: Int
     let cta: String
+
+    @State private var date = Date()
+
+    private var picked: String { timeString(hour: comps.hour ?? 0, minute: comps.minute ?? 0) }
+    private var comps: DateComponents {
+        Calendar.current.dateComponents([.hour, .minute], from: date)
+    }
+    /// The ideal time the user gave earlier, used in the commit step's copy.
+    private var idealLabel: String {
+        if let c = s.pickedTimes[16], let h = c.hour, let m = c.minute {
+            return timeString(hour: h, minute: m)
+        }
+        return timeString(hour: 6, minute: 30)
+    }
+    private var isCommitStep: Bool { cta.hasPrefix("Commit") }
+
     var body: some View {
         OBScaffold(content: {
             OBTitle(text: title)
-            if !subtitle.isEmpty { OBSubtitle(text: subtitle) }
+            let sub = isCommitStep
+                ? "Earlier, you identified \(idealLabel) as your ideal wake up time. Let's set your first alarm."
+                : subtitle
+            if !sub.isEmpty { OBSubtitle(text: sub) }
             VStack {
                 Spacer(minLength: 0)
-                OBTimeWheel(hours: s.wheel(center: hour, mod: 24),
-                            minutes: s.wheel(center: minute, mod: 60))
+                // Real wheel — this is the time their first alarm is actually set to.
+                DatePicker("", selection: $date, displayedComponents: .hourAndMinute)
+                    .datePickerStyle(.wheel)
+                    .labelsHidden()
+                    .frame(maxWidth: .infinity)
                 Spacer(minLength: 0)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }, footer: {
-            OBFooter(label: cta) { s.next() }
+            OBFooter(label: isCommitStep ? "Commit to \(picked)" : cta) {
+                s.pickedTimes[s.step] = comps
+                s.next()
+            }
         })
+        .onAppear {
+            // Default the commit step to whatever they said they wanted.
+            var seed = DateComponents(hour: hour, minute: minute)
+            if isCommitStep, let ideal = s.pickedTimes[16] { seed = ideal }
+            var c = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+            c.hour = seed.hour; c.minute = seed.minute
+            date = Calendar.current.date(from: c) ?? Date()
+        }
     }
 }
 
@@ -326,7 +359,9 @@ struct StatementScreen: View {
         OBScaffold(content: {
             VStack(spacing: 0) {
                 Spacer(minLength: 0)
-                (Text("Waking up at ") + Text("6:30 AM").foregroundColor(C.orangeSoft)
+                (Text("Waking up at ")
+                 + Text(timeString(hour: s.committedTime.hour, minute: s.committedTime.minute))
+                     .foregroundColor(C.orangeSoft)
                  + Text(" is a realistic target. It's not hard at all!"))
                     .jk(27, 800, tracking: -0.9).multilineTextAlignment(.center).lineSpacing(4)
                     .fixedSize(horizontal: false, vertical: true)

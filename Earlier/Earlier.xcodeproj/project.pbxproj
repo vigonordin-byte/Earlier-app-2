@@ -13,6 +13,7 @@
 		09A33A118E77C49D233CB600 /* SVG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2260CAED34A5018332A69C28 /* SVG.swift */; };
 		0B62C2E9BB68AD788F1DBB5D /* PlusJakartaSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 330D85C2CFAF8D8449D44CFB /* PlusJakartaSans-Medium.ttf */; };
 		129FB989703C12654E925881 /* AlarmRingingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0EB2DDD918DB5E1401D63B /* AlarmRingingView.swift */; };
+		13FFB7A9A6AFDFFF0814BAC9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA2429B16A6B4CD7CE98F452 /* Assets.xcassets */; };
 		18ECE67626B632CF9820B25F /* BlockingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 553150B8017171B34E53E7EC /* BlockingStore.swift */; };
 		1A13091BB5A5D0F2ED750C14 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB8F82491B04B9B20618DCCF /* Models.swift */; };
 		1ADBBD3EC9B346B30D15EAE5 /* Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B55A8E0079701CAB3CF502 /* Icons.swift */; };
@@ -104,6 +105,7 @@
 		D923E0E63DDBFEA319334668 /* EarlierApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarlierApp.swift; sourceTree = "<group>"; };
 		E1FF4509A5B891B04187A8E7 /* WindDownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindDownView.swift; sourceTree = "<group>"; };
 		E4389AF6B24C1CB1DC147C16 /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
+		EA2429B16A6B4CD7CE98F452 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F8E5C0E577FE99968BFA6274 /* OnboardingFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlow.swift; sourceTree = "<group>"; };
 		FA6CD74D86361249D750B403 /* DayPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayPicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -186,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				9429A44DF1EFBAA13F19AC82 /* alarm.caf */,
+				EA2429B16A6B4CD7CE98F452 /* Assets.xcassets */,
 				40FC004FCBC3C659793B6E90 /* Fonts */,
 			);
 			path = Resources;
@@ -292,6 +295,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				13FFB7A9A6AFDFFF0814BAC9 /* Assets.xcassets in Resources */,
 				E88E3ACBD9F35BAA2C33A2E1 /* PlusJakartaSans-Bold.ttf in Resources */,
 				2FBD4CB8BBECD5361F6C3936 /* PlusJakartaSans-ExtraBold.ttf in Resources */,
 				0B62C2E9BB68AD788F1DBB5D /* PlusJakartaSans-Medium.ttf in Resources */,
@@ -374,6 +378,7 @@
 		23087E5E5ED35D8C58732378 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Sources/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.earlier.app;
 				PRODUCT_NAME = Earlier;
@@ -384,6 +389,7 @@
 		94C9CB2DD38A93E55F90D882 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Sources/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.earlier.app;
 				PRODUCT_NAME = Earlier;

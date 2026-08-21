@@ -113,7 +113,7 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
                     SVGIcon(Icons.premium, fill: C.gold, w: 14).frame(width: 14, height: 12)
-                    Text("Premium").jk(14, 700).foregroundColor(C.gold)
+                    Text("Free while in beta").jk(14, 700).foregroundColor(C.gold)
                 }
                 Text("Your account").jk(20, 800, tracking: -0.5)
             }
