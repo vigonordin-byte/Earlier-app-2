@@ -80,7 +80,9 @@ struct AlarmRingingView: View {
     }
 
     private func clockString(_ d: Date) -> String {
-        let f = DateFormatter(); f.dateFormat = "h:mm"
+        let f = DateFormatter()
+        f.dateFormat = DateFormatter.dateFormat(fromTemplate: "jm", options: 0,
+                                                locale: .current) ?? "h:mm"
         return f.string(from: d)
     }
 

@@ -73,7 +73,7 @@ struct HomeView: View {
                 Text(nextDayLabel).jk(16).foregroundColor(C.muted).padding(.top, 2)
                 HDivider(color: C.divider2).padding(.horizontal, 17).padding(.top, 19)
                 HStack(spacing: 0) {
-                    Button { app.editAlarm(a.id, .challenge) } label: {
+                    Button { app.quickEdit(a.id, .challenge) } label: {
                         VStack(spacing: 0) {
                             Text(ChallengeGlyph.emoji(a.challengeName)).font(.system(size: 22))
                             Text(a.challengeName).jk(16, 700).padding(.top, 13)
@@ -83,7 +83,7 @@ struct HomeView: View {
                         .frame(maxWidth: .infinity).contentShape(Rectangle())
                     }.buttonStyle(.plain)
                     Rectangle().fill(C.divider2).frame(width: 1, height: 74)
-                    Button { app.editAlarm(a.id, .sound) } label: {
+                    Button { app.quickEdit(a.id, .sound) } label: {
                         VStack(spacing: 0) {
                             SVGIcon(Icons.speakerBirds, stroke: C.ink, lineWidth: 1.9, w: 24).frame(height: 24)
                             Text(a.soundName).jk(16, 700).padding(.top, 10)

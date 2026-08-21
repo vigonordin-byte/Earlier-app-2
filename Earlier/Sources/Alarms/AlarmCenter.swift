@@ -167,6 +167,7 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
     /// Local notifications are only a fallback for when it isn't.
     func rescheduleAll(_ ctx: ModelContext) {
         let all = (try? ctx.fetch(FetchDescriptor<AlarmModel>())) ?? []
+        let beds = (try? ctx.fetch(FetchDescriptor<BedtimeModel>())) ?? []
         if AlarmKitScheduler.shared.isAuthorized {
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
             Task { await AlarmKitScheduler.shared.sync(all) }
@@ -174,6 +175,109 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
             AlarmKitScheduler.shared.cancelAll()
             reschedule(all)
         }
+        // Bedtime reminders are notifications either way — a nudge to wind
+        // down, not an alarm that has to break through silent mode.
+        scheduleBedtimes(beds)
+    }
+
+    // MARK: - Wind-down nudge
+    private static let windDownID = "winddown-nudge"
+
+    /// "5 more minutes" — come back and ask again shortly.
+    func scheduleWindDownNudge(in seconds: TimeInterval) {
+        let content = UNMutableNotificationContent()
+        content.title = "Still up?"
+        content.body = "That was five minutes. Time to put it down."
+        content.sound = .default
+        content.userInfo = ["bedtime": true]
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
+        UNUserNotificationCenter.current()
+            .add(UNNotificationRequest(identifier: Self.windDownID, content: content, trigger: trigger))
+    }
+
+    func cancelWindDownNudge() {
+        UNUserNotificationCenter.current()
+            .removePendingNotificationRequests(withIdentifiers: [Self.windDownID])
+    }
+
+    // MARK: - Bedtime reminders
+    /// Plain snapshot so nothing SwiftData-backed crosses into async work.
+    private struct BedtimePlan: Sendable {
+        let id: UUID, name: String, hour: Int, minute: Int, repeatMask: Int
+    }
+
+    /// A wind-down nudge at bedtime, plus a heads-up 15 minutes before.
+    private func scheduleBedtimes(_ bedtimes: [BedtimeModel]) {
+        let plans = bedtimes.filter(\.enabled).map {
+            BedtimePlan(id: $0.id, name: $0.name, hour: $0.hour,
+                        minute: $0.minute, repeatMask: $0.repeatMask)
+        }
+        Task { await Self.apply(plans) }
+    }
+
+    private static func apply(_ plans: [BedtimePlan]) async {
+        let center = UNUserNotificationCenter.current()
+        let pending = await center.pendingNotificationRequests()
+        let stale = pending.map(\.identifier).filter { $0.hasPrefix("bedtime-") }
+        center.removePendingNotificationRequests(withIdentifiers: stale)
+
+        for p in plans {
+            let days: [Int?] = p.repeatMask == 0
+                ? [nil]
+                : (0..<7).filter { p.repeatMask & (1 << $0) != 0 }
+                         .map { gregorianWeekday(bit: $0) }
+
+            for weekday in days {
+                // Heads-up 15 minutes before, wrapping past midnight.
+                let warn = ((p.hour * 60 + p.minute - 15) + 24 * 60) % (24 * 60)
+                add(id: "bedtime-\(p.id)-warn-\(weekday ?? -1)",
+                    title: "Bedtime in 15 minutes",
+                    body: "Start winding down so tomorrow starts right.",
+                    hour: warn / 60, minute: warn % 60,
+                    weekday: weekday, repeats: p.repeatMask != 0)
+
+                add(id: "bedtime-\(p.id)-now-\(weekday ?? -1)",
+                    title: p.name,
+                    body: "It's bedtime. Lights out — your alarm is already set.",
+                    hour: p.hour, minute: p.minute,
+                    weekday: weekday, repeats: p.repeatMask != 0)
+            }
+        }
+    }
+
+    private static func add(id: String, title: String, body: String,
+                            hour: Int, minute: Int, weekday: Int?, repeats: Bool) {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+        content.userInfo = ["bedtime": true]
+
+        var comps = DateComponents()
+        comps.hour = hour; comps.minute = minute
+        if let weekday { comps.weekday = weekday }
+        let trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: repeats)
+        UNUserNotificationCenter.current()
+            .add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
+    }
+
+    /// Next upcoming bedtime occurrence, for the Bedtime tab header.
+    static func nextBedtimeDate(_ b: BedtimeModel, from now: Date = .now) -> Date? {
+        guard b.enabled else { return nil }
+        let cal = Calendar.current
+        if b.repeatMask == 0 {
+            var c = DateComponents(); c.hour = b.hour; c.minute = b.minute
+            return cal.nextDate(after: now, matching: c, matchingPolicy: .nextTime)
+        }
+        var best: Date?
+        for bit in 0..<7 where b.repeatMask & (1 << bit) != 0 {
+            var c = DateComponents()
+            c.weekday = gregorianWeekday(bit: bit)
+            c.hour = b.hour; c.minute = b.minute
+            if let d = cal.nextDate(after: now, matching: c, matchingPolicy: .nextTime),
+               best == nil || d < best! { best = d }
+        }
+        return best
     }
 
     /// Developer helper: fire a test alarm in `seconds`, with a mini-barrage
@@ -227,6 +331,8 @@ final class AlarmCenter: NSObject, ObservableObject, UNUserNotificationCenterDel
 
     // MARK: - UNUserNotificationCenterDelegate
     private func openRinging(from userInfo: [AnyHashable: Any]) {
+        // Bedtime nudges are informational — they never trigger the challenge.
+        if userInfo["bedtime"] as? Bool == true { return }
         let id = (userInfo["alarmId"] as? String).flatMap(UUID.init(uuidString:))
         beginRinging(id)
     }

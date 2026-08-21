@@ -10,18 +10,18 @@ private struct PickerTarget {
     let alarms: [AlarmModel]
 
     var editing: AlarmModel? {
-        guard let id = app.editingAlarmID else { return nil }
+        guard let id = app.quickEditAlarmID else { return nil }
         return alarms.first { $0.id == id }
     }
-    var currentChallenge: String { editing?.challengeName ?? app.draftChallenge }
-    var currentSound: String { editing?.soundName ?? app.draftSound }
+    var currentChallenge: String { editing?.challengeName ?? app.draft.challenge }
+    var currentSound: String { editing?.soundName ?? app.draft.sound }
 
     func setChallenge(_ name: String) {
         if let a = editing {
             a.challengeName = name; a.touch(); try? ctx.save()
             AlarmCenter.shared.rescheduleAll(ctx)
         } else {
-            app.draftChallenge = name
+            app.draft.challenge = name
         }
     }
     func setSound(_ name: String) {
@@ -29,7 +29,7 @@ private struct PickerTarget {
             a.soundName = name; a.touch(); try? ctx.save()
             AlarmCenter.shared.rescheduleAll(ctx)
         } else {
-            app.draftSound = name
+            app.draft.sound = name
         }
     }
 }
@@ -37,40 +37,46 @@ private struct PickerTarget {
 // MARK: - Time picker sheet
 struct TimeSheet: View {
     @EnvironmentObject var app: AppState
+    @State private var date = Date()
+
+    private var isBedtime: Bool { app.view == .bedtimeEditor }
+
     var body: some View {
         SheetContainer(bg: C.sheetBg, scroll: false, onScrim: { app.backSub() }) {
-            SheetHeader(title: "Alarm time", trailingInset: 17) {
+            SheetHeader(title: isBedtime ? "Bedtime" : "Alarm time", trailingInset: 17) {
                 CircleBackButton { app.backSub() }
             }.padding(.top, 17)
 
-            Text("Scroll to pick your wake-up time").jk(18).foregroundColor(C.muted)
-                .frame(maxWidth: .infinity).multilineTextAlignment(.center).padding(.top, 19)
+            Text(isBedtime ? "Scroll to pick when you'll turn in"
+                           : "Scroll to pick your wake-up time")
+                .jk(18).foregroundColor(C.muted)
+                .frame(maxWidth: .infinity).multilineTextAlignment(.center)
+                .padding(.top, 19)
 
-            ZStack {
-                VStack(spacing: 0) {
-                    Spacer().frame(height: 81)
-                    RoundedRectangle(cornerRadius: 24, style: .continuous).fill(C.pill).frame(height: 47)
-                    Spacer()
-                }
-                HStack(spacing: 0) {
-                    pickerColumn(Mock.hours)
-                    pickerColumn(Mock.minutes)
-                }
-            }
-            .frame(height: 228).padding(.top, 22)
+            // Native wheel: real scrolling, snapping, haptics, 12/24h and
+            // locale handled by the system — the things a hand-rolled wheel
+            // gets wrong, on the screen that matters most.
+            DatePicker("", selection: $date, displayedComponents: .hourAndMinute)
+                .datePickerStyle(.wheel)
+                .labelsHidden()
+                .frame(maxWidth: .infinity)
+                .padding(.top, 10)
 
-            PrimaryButton(title: "Set 6:30 AM") { app.backSub() }.padding(.top, 17)
+            PrimaryButton(title: "Set \(app.draft.timeLabel)") { app.backSub() }
+                .padding(.top, 17)
+        }
+        .onAppear { date = Self.date(from: app.draft) }
+        .onChange(of: date) { _, new in
+            let c = Calendar.current.dateComponents([.hour, .minute], from: new)
+            app.draft.hour = c.hour ?? 0
+            app.draft.minute = c.minute ?? 0
         }
     }
 
-    private func pickerColumn(_ vals: [PickerValue]) -> some View {
-        VStack(spacing: 0) {
-            ForEach(vals) { v in
-                Text(v.v).jk(v.on ? 34 : 30, 800)
-                    .foregroundColor(v.on ? C.ink : Color(hex: "DEDBD3"))
-                    .frame(height: 46).frame(maxWidth: .infinity)
-            }
-        }
+    private static func date(from d: AlarmDraft) -> Date {
+        var c = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+        c.hour = d.hour; c.minute = d.minute
+        return Calendar.current.date(from: c) ?? Date()
     }
 }
 

@@ -1,8 +1,44 @@
 import SwiftUI
+import SwiftData
 
 struct WindDownView: View {
     @EnvironmentObject var app: AppState
     @Environment(\.safeInsets) private var insets
+    @Environment(\.modelContext) private var ctx
+    @Query private var alarms: [AlarmModel]
+    /// Snoozes are per-night and limited — the point is to make delay cost something.
+    @AppStorage("windDownSnoozesUsed") private var snoozesUsed = 0
+    @AppStorage("windDownSnoozeNight") private var snoozeNight = ""
+
+    private static let snoozeLimit = 2
+
+    private var nextAlarm: (alarm: AlarmModel, date: Date)? {
+        var best: (alarm: AlarmModel, date: Date)?
+        for a in alarms where a.enabled {
+            guard let d = AlarmCenter.nextFireDate(a) else { continue }
+            if best == nil || d < best!.date { best = (a, d) }
+        }
+        return best
+    }
+
+    /// "8h 00m" until the next alarm, or nil when nothing is scheduled.
+    private var sleepWindow: String? {
+        guard let d = nextAlarm?.date else { return nil }
+        let secs = max(0, Int(d.timeIntervalSinceNow))
+        return String(format: "%dh %02dm", secs / 3600, (secs % 3600) / 60)
+    }
+
+    private var alarmTimeLabel: String { nextAlarm?.alarm.timeLabel ?? "your alarm" }
+
+    /// Nights roll at noon so an after-midnight session still counts as tonight.
+    private var nightKey: String {
+        let shifted = Calendar.current.date(byAdding: .hour, value: -12, to: Date()) ?? Date()
+        let f = DateFormatter(); f.dateFormat = "yyyy-MM-dd"
+        return f.string(from: shifted)
+    }
+    private var snoozesLeft: Int {
+        snoozeNight == nightKey ? max(0, Self.snoozeLimit - snoozesUsed) : Self.snoozeLimit
+    }
 
     var body: some View {
         ZStack {
@@ -14,7 +50,8 @@ struct WindDownView: View {
                 Spacer(minLength: 0).frame(maxHeight: .infinity)
                 Text("It's bedtime.").jk(39, 800, tracking: -1.6)
                     .frame(maxWidth: .infinity)
-                Text("Lights out now and you get 8h 00m before your 6:30 AM alarm.")
+                Text(sleepWindow.map { "Lights out now and you get \($0) before your \(alarmTimeLabel) alarm." }
+                     ?? "No alarm is set yet — set one so tomorrow has a shape.")
                     .jk(18).foregroundColor(C.muted)
                     .multilineTextAlignment(.center).lineSpacing(4)
                     .fixedSize(horizontal: false, vertical: true)
@@ -22,17 +59,44 @@ struct WindDownView: View {
                     .padding(.top, 8)
                 appsResting.padding(.top, 22)
                 Spacer(minLength: 0).frame(maxHeight: .infinity).layoutPriority(0.8)
-                Text("5 more minutes · 1 left").jk(17, 600).foregroundColor(Color(hex: "6E6A62"))
-                    .frame(maxWidth: .infinity).padding(.vertical, 14)
-                    .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(C.pill))
-                PrimaryButton(title: "Good night") { app.back() }.padding(.top, 10)
-                Text("Screen dims in 20s").jk(15).foregroundColor(C.muted3)
+                Button { snooze() } label: {
+                    Text(snoozesLeft > 0
+                         ? "5 more minutes · \(snoozesLeft) left"
+                         : "No more delays tonight")
+                        .jk(17, 600)
+                        .foregroundColor(snoozesLeft > 0 ? Color(hex: "6E6A62") : C.placeholder)
+                        .frame(maxWidth: .infinity).padding(.vertical, 14)
+                        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(C.pill))
+                        .contentShape(Rectangle())
+                }.buttonStyle(.plain).disabled(snoozesLeft == 0)
+
+                PrimaryButton(title: "Good night") { goodNight() }.padding(.top, 10)
+
+                Text(sleepWindow.map { "Sleeping now gives you \($0)." } ?? " ")
+                    .jk(15).foregroundColor(C.muted3)
                     .frame(maxWidth: .infinity).padding(.top, 12)
             }
             .padding(.horizontal, 22)
             .padding(.top, insets.top + 6)
             .padding(.bottom, insets.bottom + 18)
         }
+    }
+
+    /// Nudge again in 5 minutes, and spend one of tonight's allowances.
+    private func snooze() {
+        guard snoozesLeft > 0 else { return }
+        if snoozeNight != nightKey { snoozeNight = nightKey; snoozesUsed = 0 }
+        snoozesUsed += 1
+        AlarmCenter.shared.scheduleWindDownNudge(in: 5 * 60)
+        app.back()
+    }
+
+    /// Confirm lights-out: clear any pending nudge and make sure tomorrow's
+    /// alarm is actually armed before the screen goes away.
+    private func goodNight() {
+        AlarmCenter.shared.cancelWindDownNudge()
+        AlarmCenter.shared.rescheduleAll(ctx)
+        app.back()
     }
 
     private var header: some View {
@@ -68,7 +132,7 @@ struct WindDownView: View {
             HStack(alignment: .firstTextBaseline) {
                 Text("Apps are resting").jk(19, 800, tracking: -0.4)
                 Spacer()
-                Text("until 6:30 AM").jk(15).foregroundColor(C.muted)
+                Text("until \(alarmTimeLabel)").jk(15).foregroundColor(C.muted)
             }
             HStack(spacing: 10) {
                 restTile(Icons.restRefresh)

@@ -4,6 +4,40 @@ Native **SwiftUI** implementation of the *Earlier* wake-up / alarm app, built fr
 Claude Design imports (`Earlier Onboarding.dc.html` + `Earlier App.dc.html`). The app
 launches into the **onboarding flow** (36 steps), then transitions into the **main app**.
 
+**Editing is real (done):** alarms and bedtimes are created *and edited* through a shared
+draft (`AlarmDraft` in `AppState`). The alarm-time wheel is a native `DatePicker` — real
+scrolling, snapping, haptics, and 12h/24h + locale handled by the system. The pencil on an
+alarm card opens the editor (name, time, repeat days, sound, challenge, delete); the pencil
+on a bedtime card edits that bedtime **in place** (it used to silently create a duplicate).
+"Scheduled" vs "One time" now actually switches between repeating and single-fire. All
+displayed times use the device's clock format instead of a hardcoded US `h:mm a`.
+
+**Bedtimes actually fire (done):** enabled bedtimes schedule two local notifications per
+active night — a heads-up 15 minutes before and the bedtime itself — rebuilt on every
+change (`scheduleBedtimes` in `AlarmCenter`). Bedtime notifications never raise the alarm
+challenge. Wind-down shows the real time until your next alarm, and "5 more minutes" is a
+genuine, per-night-limited delay that re-nudges you; "Good night" clears the nudge and
+re-arms tomorrow.
+
+**Settings do things (done):** every row is wired — Alarm settings / Bedtime / App blocking
+navigate, Notifications opens iOS Settings, Support opens mail, Leave a review uses the
+system review prompt, Terms/Privacy open `AppLinks` URLs, Manage subscription opens Apple's
+subscriptions page, and *Delete account & data* wipes local data behind a confirmation.
+"Log out" is shown but dimmed with "Not signed in" — honest until auth exists.
+
+> ⚠️ `Sources/Store/AppLinks.swift` holds **placeholder** Terms/Privacy URLs. They must
+> point at real published pages before submission — Apple rejects builds with dead legal
+> links, and the privacy policy URL is a required App Store Connect field.
+
+**Achievements are earned (done):** unlock state is computed from real `WakeLog` streaks
+against day thresholds (1/3/7/10/14/21) instead of hardcoded flags.
+
+**App blocking is honest (done):** enforcement needs Apple's Family Controls entitlement
+(paid Developer Program + separate approval), so `BlockingStore.isEnforceable` is `false`
+and the UI says "App blocking needs Screen Time access — coming soon" rather than claiming
+apps are blocked. The category selection and deferred-unblocking rules are real and ready
+for the day the entitlement lands.
+
 **Native alarms via AlarmKit (done):** alarms are scheduled with Apple's **AlarmKit**
 (`Sources/Alarms/AlarmKitScheduler.swift`) — real system alarms that ring through silent
 mode and Focus with Apple's own presentation, the same mechanism the built-in Clock app
@@ -24,9 +58,6 @@ written / signature drawn) with a real progress bar; Wake-up reason is a working
 TextEditor and Sign your commitment is a real drawing pad, both persisted. Streak, Past 7
 days, History and the streak overlay are computed from `WakeLog` records via
 `Sources/Store/Stats.swift`.
-
-**Known gap:** the alarm-time wheel in New alarm is still the design's static picker —
-new alarms are created at 6:30 AM. Making it selectable is the next task.
 
 **Bedtime can't be quit on impulse (done):** switching a bedtime off — or turning off app
 blocking — routes through a full-screen **"Wait a minute."** guard

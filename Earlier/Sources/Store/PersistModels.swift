@@ -35,10 +35,14 @@ enum Weekdays {
     }
 }
 
-private func timeString(hour: Int, minute: Int) -> String {
+/// Formats a wall-clock time the way the device is configured (12h vs 24h,
+/// locale separators) rather than forcing US "h:mm a".
+func timeString(hour: Int, minute: Int) -> String {
     var c = DateComponents(); c.hour = hour; c.minute = minute
     let date = Calendar.current.date(from: c) ?? Date()
-    let f = DateFormatter(); f.dateFormat = "h:mm a"
+    let f = DateFormatter()
+    f.timeStyle = .short
+    f.dateStyle = .none
     return f.string(from: date)
 }
 

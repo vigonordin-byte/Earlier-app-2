@@ -24,7 +24,7 @@ struct RootView: View {
                         Spacer()
                         HStack {
                             Spacer()
-                            Fab { app.openNewAlarm() }
+                            Fab { app.openAddForCurrentTab() }
                                 .padding(.trailing, 22)
                                 .padding(.bottom, tabBarHeight(geo.safeAreaInsets) + 17)
                         }
@@ -72,8 +72,8 @@ struct RootView: View {
     @ViewBuilder private var overlays: some View {
         switch app.view {
         case .windDown:    WindDownView().transition(.opacity)
-        case .newAlarm:    NewAlarmView().transition(.move(edge: .bottom))
-        case .editBedtime: EditBedtimeView().transition(.move(edge: .bottom))
+        case .alarmEditor:   AlarmEditorView().transition(.move(edge: .bottom))
+        case .bedtimeEditor: BedtimeEditorView().transition(.move(edge: .bottom))
         case .achievements: AchievementsView().transition(.opacity)
         case .streak:      StreakView().transition(.opacity)
         case .reason:      ReasonView().transition(.opacity)

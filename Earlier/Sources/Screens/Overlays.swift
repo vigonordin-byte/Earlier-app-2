@@ -4,6 +4,12 @@ import SwiftData
 // MARK: - Achievements (full screen)
 struct AchievementsView: View {
     @EnvironmentObject var app: AppState
+    @Query private var logs: [WakeLog]
+
+    /// Day thresholds, in the same order as the achievement list.
+    private static let thresholds = [1, 3, 7, 10, 14, 21]
+    private var best: Int { max(Stats.bestStreak(logs), Stats.streak(logs)) }
+
     var body: some View {
         FullOverlay(bg: C.phoneBg, scroll: true, topPad: 12) {
             ZStack {
@@ -17,7 +23,10 @@ struct AchievementsView: View {
             }
 
             VStack(spacing: 22) {
-                ForEach(Mock.achievements) { a in
+                ForEach(Array(Mock.achievements.enumerated()), id: \.element.id) { i, mock in
+                    let threshold = Self.thresholds.indices.contains(i) ? Self.thresholds[i] : .max
+                    let a = Achievement(name: mock.name, streak: mock.streak,
+                                        desc: mock.desc, on: best >= threshold)
                     HStack(alignment: .top, spacing: 17) {
                         ZStack {
                             RoundedRectangle(cornerRadius: 17, style: .continuous)

@@ -32,9 +32,13 @@ struct AlarmView: View {
                 .padding(.horizontal, 15).padding(.vertical, 8)
                 .fill(C.chip, 19)
                 Spacer(minLength: 0)
-                SVGIcon(Icons.pencil, stroke: C.muted, lineWidth: 1.7, w: 22).frame(width: 22, height: 22)
+                Button { app.openEditAlarm(a) } label: {
+                    SVGIcon(Icons.pencil, stroke: C.muted, lineWidth: 1.7, w: 22)
+                        .frame(width: 44, height: 44)          // 44pt tap target
+                        .contentShape(Rectangle())
+                }.buttonStyle(.plain)
             }
-            .padding(.horizontal, 17).padding(.vertical, 13)
+            .padding(.leading, 17).padding(.trailing, 6).padding(.vertical, 4)
 
             HDivider()
 

@@ -28,6 +28,13 @@ enum BlockCategory: String, CaseIterable, Identifiable {
 final class BlockingStore: ObservableObject {
     static let shared = BlockingStore()
 
+    /// Actually preventing apps from opening needs Apple's **Family Controls**
+    /// entitlement, which requires a paid Developer Program membership *and* a
+    /// separate approval from Apple. Until that lands the selection below is
+    /// stored but not enforced — and the UI says so rather than implying the
+    /// blocking is live.
+    static let isEnforceable = false
+
     private let d = UserDefaults.standard
     private let activeKey = "blocking.active"
     private let pendingKey = "blocking.pending"
